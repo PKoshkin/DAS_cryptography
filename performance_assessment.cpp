@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <numeric>
 #include <chrono>
 
 
@@ -14,12 +12,10 @@ int main() {
     // record start time
     auto start = std::chrono::system_clock::now();
 
-
     // do some work
     for (int i = 0; i < OPERATIONS; ++i) {
         int z = x + y;
     }
-
 
     // record end time
     auto end = std::chrono::system_clock::now();
