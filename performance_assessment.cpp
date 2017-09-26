@@ -3,6 +3,7 @@
 
 
 const int OPERATIONS = 1000000000;
+const int COMPUTERS = 1;
 
 
 int main() {
@@ -19,7 +20,8 @@ int main() {
 
     // record end time
     auto end = std::chrono::system_clock::now();
-    std::chrono::duration<double> diff = end-start;
-    std::cout << OPERATIONS << " operations take " << diff.count() << " seconds." << std::endl;
+    std::chrono::duration<double> diff = end - start;
+    double double_diff = diff.count();
+    std::cout << 365 * 24 * 60 * 60 * COMPUTERS * (double(OPERATIONS) / double_diff) << " operations per year." << std::endl;
     return 0;
 }
