@@ -3,10 +3,7 @@
 #include <cassert>
 #include <string>
 
-#include "vec_8.h"
-#include "int_8.h"
+#include "block.h"
 
 
-short _pi(const short);
-
-std::string pi(const std::string&);
+Block<8> pi(const Block<8>&);

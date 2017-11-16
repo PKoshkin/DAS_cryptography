@@ -1,9 +1,9 @@
 #include "pi.h"
 
 
-short _pi(const short in_short) {
-    assert((0 <= in_short) && (in_short < 256));
-    const short mapping_array[256] = {
+std::size_t _pi(const size_t in_number) {
+    assert((0 <= in_number) && (in_number < 256));
+    const std::size_t mapping_array[256] = {
         252, 238, 221, 17, 207, 110, 49, 22, 251, 196, 250, 218, 35, 197, 4, 77, 233, 119, 
         240, 219, 147, 46, 153, 186, 23, 54, 241, 187, 20, 205, 95, 193, 249, 24, 101, 90,
         226, 92, 239, 33, 129, 28, 60, 66, 139, 1, 142, 79, 5, 132, 2, 174, 227, 106, 143,
@@ -19,11 +19,10 @@ short _pi(const short in_short) {
         216, 133, 97, 32, 113, 103, 164, 45, 43, 9, 91, 203, 155, 37, 208, 190, 229, 108,
         82, 89, 166, 116, 210, 230, 244, 180, 192, 209, 102, 175, 194, 57, 75, 99, 182
     };
-    return mapping_array[in_short];
+    return mapping_array[in_number];
 }
 
 
-std::string pi(const std::string& in_string) {
-    assert(in_string.length() == 8);
-    return vec_8(_pi(int_8(in_string)));
+Block<8> pi(const Block<8>& in_block) {
+    return Block<8>(_pi(in_block.get_number()));
 }
