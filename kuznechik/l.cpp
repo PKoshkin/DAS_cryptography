@@ -11,6 +11,5 @@ Block<128> l(const Block<128>& in_block) {
     auto denominator = Block<8 * 2>(std::string(8 * 2 - 9, '0') + "111000011");
     for (std::size_t i = 0; i < 16; ++i) {
         Block<8> product = multiply(Block<8>(coefs[i]), parts[i], denominator);
-        result ^= 
     }
 }
