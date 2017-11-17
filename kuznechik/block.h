@@ -25,10 +25,10 @@ public:
     std::size_t get_deg() const;
 
     // multiplying as polynoms
-    template <std::size_t MULT_BLOCK_SIZE>
-    friend Block<MULT_BLOCK_SIZE> multiply(const Block<MULT_BLOCK_SIZE>&,
-                                           const Block<MULT_BLOCK_SIZE>&,
-                                           const Block<MULT_BLOCK_SIZE * 2>&);
+    template <std::size_t OTHER_BLOCK_SIZE>
+    friend Block<OTHER_BLOCK_SIZE> multiply(const Block<OTHER_BLOCK_SIZE>&,
+                                            const Block<OTHER_BLOCK_SIZE>&,
+                                            const Block<OTHER_BLOCK_SIZE * 2>&);
 };
 
 
