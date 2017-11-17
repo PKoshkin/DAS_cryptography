@@ -2,19 +2,17 @@
 #include <bitset>
 #include <string>
 #include <cassert>
-#include <memory>
 
 #include "pi.h"
 #include "block.h"
 
 
 int main() {
-    std::string bit_string = "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";
-    std::cout << bit_string.length() << std::endl;
-    Block<128> block(bit_string);
-    std::unique_ptr<Block<8>[]> blocks = get_parts(block);
-    for (std::size_t i = 0; i < 16; ++i) {
-        std::cout << blocks[i].get_string() << std::endl;
-    }
+    auto x = Block<8>("10010100");
+    auto y = Block<8>("00000111");
+    auto z = Block<8 * 8>(std::string(8 * 8 - 9, '0') + "111000011");
+    auto r = multiply(x, y, z);
+    std::cout << r.get_string() << std::endl;
+
     return 0;
 }
