@@ -1,8 +1,7 @@
 #include "pi.h"
 
 
-std::size_t _pi(const size_t in_number) {
-    assert((0 <= in_number) && (in_number < 256));
+std::bitset<8> pi(const std::bitset<8>& in_block) {
     const std::size_t mapping_array[256] = {
         252, 238, 221, 17, 207, 110, 49, 22, 251, 196, 250, 218, 35, 197, 4, 77, 233, 119, 
         240, 219, 147, 46, 153, 186, 23, 54, 241, 187, 20, 205, 95, 193, 249, 24, 101, 90,
@@ -19,10 +18,5 @@ std::size_t _pi(const size_t in_number) {
         216, 133, 97, 32, 113, 103, 164, 45, 43, 9, 91, 203, 155, 37, 208, 190, 229, 108,
         82, 89, 166, 116, 210, 230, 244, 180, 192, 209, 102, 175, 194, 57, 75, 99, 182
     };
-    return mapping_array[in_number];
-}
-
-
-Block<8> pi(const Block<8>& in_block) {
-    return Block<8>(_pi(in_block.get_number()));
+    return std::bitset<8>(mapping_array[in_block.to_ulong()]);
 }

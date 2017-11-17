@@ -1,6 +1,8 @@
 #pragma once
 
-#include "block.h"
+#include <bitset>
+
+#include "polynom.h"
 
 
-Block<128> l(const Block<128>&);
+std::bitset<128> l(const std::bitset<128>&);

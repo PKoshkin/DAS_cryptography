@@ -1,9 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include <string>
-
-#include "block.h"
+#include <bitset>
 
 
-Block<8> pi(const Block<8>&);
+std::bitset<8> pi(const std::bitset<8>&);
