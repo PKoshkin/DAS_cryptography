@@ -1,10 +1,6 @@
 #pragma once
 
 #include <bitset>
-#include <string>
-#include <cassert>
-#include <cmath>
-#include <vector>
 
 #include <iostream>
 
@@ -21,25 +17,26 @@ std::size_t get_deg(const std::bitset<BLOCK_SIZE>& in_polynom) {
 
 
 template <std::size_t BLOCK_SIZE>
-std::bitset<BLOCK_SIZE> multiply(const std::bitset<BLOCK_SIZE>& polynom_1,
-                           const std::bitset<BLOCK_SIZE>& polynom_2,
-                           const std::bitset<BLOCK_SIZE * 2>& denominator_polynom) {
-    std::bitset<BLOCK_SIZE * 2> dividend_polynom;
+std::bitset<(BLOCK_SIZE - 1) * 2 + 1> multiply(const std::bitset<BLOCK_SIZE>& polynom_1,
+                                     const std::bitset<BLOCK_SIZE>& polynom_2) {
+    std::bitset<(BLOCK_SIZE - 1) * 2 + 1> product_polynom;
     for (std::size_t i = 0; i < BLOCK_SIZE; ++i) {
         for (std::size_t j = 0; j < BLOCK_SIZE; ++j) {
-            if ((polynom_1[i] * polynom_2[j]) % 2) {
-                dividend_polynom[i + j].flip();
+            if (polynom_1[i] * polynom_2[j]) {
+                product_polynom.flip(i + j);
             }
         }
     }
+    return product_polynom;
+}
 
-    std::bitset<BLOCK_SIZE> result;
+template <std::size_t BLOCK_SIZE>
+std::bitset<(BLOCK_SIZE - 1) / 2 + 1> get_mod(std::bitset<BLOCK_SIZE> dividend_polynom,
+                                const std::bitset<BLOCK_SIZE>& denominator_polynom) {
     int deg_diff = get_deg(dividend_polynom) - get_deg(denominator_polynom);
     while (deg_diff >= 0) {
-        result[deg_diff] = 1;
         dividend_polynom ^= (denominator_polynom << deg_diff);
         deg_diff = get_deg(dividend_polynom) - get_deg(denominator_polynom);
     }
-
-    return result;
+    return std::bitset<(BLOCK_SIZE - 1) / 2 + 1>(dividend_polynom.to_string().substr((BLOCK_SIZE - 1) / 2, (BLOCK_SIZE) / 2 + 1));
 }
