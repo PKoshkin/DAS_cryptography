@@ -1,6 +1,14 @@
 #include "key.h"
 
 
-std::pair<std::bitset<128>, std::bitset<128>> F(const std::bitset<128>& k, const std::bitset<128>& a_1, const std::bitset<128>& a_0) {
+std::vector<SplitedBlock> get_constants() {
+    result 
+    for (std::size_t i = 1; i <= 32; ++i) {
+        
+    }
+}
 
+
+std::pair<SplitedBlock, SplitedBlock> F(const SplitedBlock& k, const SplitedBlock& a_1, const SplitedBlock& a_0) {
+    
 }

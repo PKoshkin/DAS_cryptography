@@ -1,7 +1,7 @@
 #include "pi.h"
 
 
-std::bitset<8> pi(const std::bitset<8>& in_block) {
+SmallBlock pi(const SmallBlock& in_block) {
     const std::size_t mapping_array[256] = {
         252, 238, 221, 17, 207, 110, 49, 22, 251, 196, 250, 218, 35, 197, 4, 77,
         233, 119, 240, 219, 147, 46, 153, 186, 23, 54, 241, 187, 20, 205, 95, 193,
@@ -20,11 +20,11 @@ std::bitset<8> pi(const std::bitset<8>& in_block) {
         32, 113, 103, 164, 45, 43, 9, 91, 203, 155, 37, 208, 190, 229, 108, 82,
         89, 166, 116, 210, 230, 244, 180, 192, 209, 102, 175, 194, 57, 75, 99, 182,
     };
-    return std::bitset<8>(mapping_array[in_block.to_ulong()]);
+    return SmallBlock(mapping_array[in_block.to_ulong()]);
 }
 
 
-std::bitset<8> pi_inverse(const std::bitset<8>& in_block) {
+SmallBlock pi_inverse(const SmallBlock& in_block) {
     const std::size_t inverse_mapping_array[256] = {
         165, 45, 50, 143, 14, 48, 56, 192, 84, 230, 158, 57, 85, 126, 82, 145,
         100, 3, 87, 90, 28, 96, 7, 24, 33, 114, 168, 209, 41, 198, 164, 63,
@@ -43,5 +43,5 @@ std::bitset<8> pi_inverse(const std::bitset<8>& in_block) {
         144, 208, 36, 52, 203, 237, 244, 206, 153, 16, 68, 64, 146, 58, 1, 38,
         18, 26, 72, 104, 245, 129, 139, 199, 214, 32, 10, 8, 0, 76, 215, 116,
     };
-    return std::bitset<8>(inverse_mapping_array[in_block.to_ulong()]);
+    return SmallBlock(inverse_mapping_array[in_block.to_ulong()]);
 }

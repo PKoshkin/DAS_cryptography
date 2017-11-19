@@ -2,7 +2,7 @@
 
 #include <bitset>
 
-#include <iostream>
+#include "block.h"
 
 
 template <std::size_t BLOCK_SIZE>

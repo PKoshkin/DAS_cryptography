@@ -6,17 +6,16 @@
 
 #include "l.h"
 #include "pi.h"
+#include "block.h"
 
-#include <iostream>
 
+SplitedBlock& X(const SplitedBlock&, SplitedBlock&);
 
-std::deque<std::bitset<8>>& X(const std::deque<std::bitset<8>>&, std::deque<std::bitset<8>>&);
+SplitedBlock& L(SplitedBlock&);
+SplitedBlock& L_inverse(SplitedBlock&);
 
-std::deque<std::bitset<8>>& L(std::deque<std::bitset<8>>&);
-std::deque<std::bitset<8>>& L_inverse(std::deque<std::bitset<8>>&);
+SplitedBlock& S(SplitedBlock&);
+SplitedBlock& S_inverse(SplitedBlock&);
 
-std::deque<std::bitset<8>>& S(std::deque<std::bitset<8>>&);
-std::deque<std::bitset<8>>& S_inverse(std::deque<std::bitset<8>>&);
-
-std::deque<std::bitset<8>>& R(std::deque<std::bitset<8>>&);
-std::deque<std::bitset<8>>& R_inverse(std::deque<std::bitset<8>>&);
+SplitedBlock& R(SplitedBlock&);
+SplitedBlock& R_inverse(SplitedBlock&);

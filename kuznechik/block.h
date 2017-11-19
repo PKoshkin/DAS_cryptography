@@ -5,9 +5,11 @@
 #include <deque>
 #include <cassert>
 
-#include <iostream>
+typedef std::bitset<128> Block;
+typedef std::bitset<8> SmallBlock;
+typedef std::bitset<15> ProductBlock;
+typedef std::deque<std::bitset<8>> SplitedBlock;
 
+SplitedBlock get_parts(const Block&);
 
-std::deque<std::bitset<8>> get_parts(const std::bitset<128>&);
-
-std::bitset<128> concatinate(const std::deque<std::bitset<8>>);
+Block concatinate(const SplitedBlock&);

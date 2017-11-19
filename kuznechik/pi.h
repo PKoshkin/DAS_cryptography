@@ -3,6 +3,8 @@
 #include <cassert>
 #include <bitset>
 
+#include "block.h"
 
-std::bitset<8> pi(const std::bitset<8>&);
-std::bitset<8> pi_inverse(const std::bitset<8>&);
+
+SmallBlock pi(const SmallBlock&);
+SmallBlock pi_inverse(const SmallBlock&);

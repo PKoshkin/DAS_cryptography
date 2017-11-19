@@ -1,7 +1,7 @@
 #include "lsx.h"
 
 
-std::deque<std::bitset<8>>& X(const std::deque<std::bitset<8>>& k, std::deque<std::bitset<8>>& a) {
+SplitedBlock& X(const SplitedBlock& k, SplitedBlock& a) {
     assert(k.size() == 16);
     assert(a.size() == 16);
 
@@ -12,7 +12,7 @@ std::deque<std::bitset<8>>& X(const std::deque<std::bitset<8>>& k, std::deque<st
 }
 
 
-std::deque<std::bitset<8>>& L(std::deque<std::bitset<8>>& a) {
+SplitedBlock& L(SplitedBlock& a) {
     assert(a.size() == 16);
 
     for (std::size_t i = 0; i < 16; ++i) {
@@ -21,7 +21,7 @@ std::deque<std::bitset<8>>& L(std::deque<std::bitset<8>>& a) {
     return a;
 }
 
-std::deque<std::bitset<8>>& L_inverse(std::deque<std::bitset<8>>& a) {
+SplitedBlock& L_inverse(SplitedBlock& a) {
     assert(a.size() == 16);
 
     for (std::size_t i = 0; i < 16; ++i) {
@@ -31,7 +31,7 @@ std::deque<std::bitset<8>>& L_inverse(std::deque<std::bitset<8>>& a) {
 }
 
 
-std::deque<std::bitset<8>>& S(std::deque<std::bitset<8>>& a) {
+SplitedBlock& S(SplitedBlock& a) {
     assert(a.size() == 16);
 
     for (std::size_t i = 0; i < a.size(); ++i) {
@@ -40,7 +40,7 @@ std::deque<std::bitset<8>>& S(std::deque<std::bitset<8>>& a) {
     return a;
 }
 
-std::deque<std::bitset<8>>& S_inverse(std::deque<std::bitset<8>>& a) {
+SplitedBlock& S_inverse(SplitedBlock& a) {
     assert(a.size() == 16);
 
     for (std::size_t i = 0; i < a.size(); ++i) {
@@ -50,10 +50,10 @@ std::deque<std::bitset<8>>& S_inverse(std::deque<std::bitset<8>>& a) {
 }
 
 
-std::deque<std::bitset<8>>& R(std::deque<std::bitset<8>>& a) {
+SplitedBlock& R(SplitedBlock& a) {
     assert(a.size() == 16);
 
-    std::bitset<8> mixed = l(a);
+    SmallBlock mixed = l(a);
     a.pop_front();
     a.push_back(mixed);
 
@@ -61,13 +61,13 @@ std::deque<std::bitset<8>>& R(std::deque<std::bitset<8>>& a) {
     return a;
 }
 
-std::deque<std::bitset<8>>& R_inverse(std::deque<std::bitset<8>>& a) {
+SplitedBlock& R_inverse(SplitedBlock& a) {
     assert(a.size() == 16);
 
-    std::bitset<8> a_15 = a.back();
+    SmallBlock a_15 = a.back();
     a.pop_back();
     a.push_front(a_15);
-    std::bitset<8> mixed = l(a);
+    SmallBlock mixed = l(a);
     a.pop_front();
     a.push_front(mixed);
 
