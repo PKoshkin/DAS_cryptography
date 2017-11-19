@@ -3,6 +3,7 @@
 #include <string>
 #include <deque>
 #include <utility>
+#include <chrono>
 
 #include "block.h"
 #include "lsx.h"
@@ -102,20 +103,16 @@ int main(int argc, char** argv) {
             return 0;
         }
     } else if (argc == 1) {
-        std::bitset<128> key(std::string(128, '1'));
+        std::bitset<256> key(std::string(256, '1'));
         std::bitset<128> block(std::string(128, '0'));
         auto splited_block = split(block);
-        auto splited_key = split(key);
-        std::cout << block.to_string() << std::endl;
-
-        auto lsx = L(S(X(splited_key, splited_block)));
-        std::bitset<128> result = concatinate(lsx);
-        std::cout << result.to_string() << std::endl;
-
-        auto splited_result = split(result);
-        auto input = X(splited_key, S_inverse(L_inverse(splited_result)));
-        std::bitset<128> input_block = concatinate(input);
-        std::cout << input_block.to_string() << std::endl;
+        auto start = std::chrono::system_clock::now();
+        for (std::size_t i = 0; i < 64; ++i) {
+            SplitedBlock result = encrypt(key, splited_block);
+        }
+        auto end = std::chrono::system_clock::now();
+        std::chrono::duration<double> diff = end - start; // seconds to encode 1 MB
+        std::cout << 1 / diff.count() << " Mb per second\n";
         return 0;
     } else {
         std::cout << "Wrong arguments number!" << std::endl;
