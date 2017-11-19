@@ -19,3 +19,5 @@ SplitedBlock& S_inverse(SplitedBlock&);
 
 SplitedBlock& R(SplitedBlock&);
 SplitedBlock& R_inverse(SplitedBlock&);
+
+SplitedBlock& LSX(const SplitedBlock&, SplitedBlock&);

@@ -1,6 +1,6 @@
 #include "block.h"
 
-SplitedBlock get_parts(const Block& in_block) {
+SplitedBlock split(const Block& in_block) {
     SplitedBlock result;
     std::string in_string = in_block.to_string();
     for (std::size_t i = 0; i < 16; ++i) {

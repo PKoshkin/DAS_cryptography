@@ -74,3 +74,8 @@ SplitedBlock& R_inverse(SplitedBlock& a) {
     assert(a.size() == 16);
     return a;
 }
+
+
+SplitedBlock& LSX(const SplitedBlock& k, SplitedBlock& a) {
+    return L(S(X(k, a)));
+}

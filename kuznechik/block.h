@@ -10,6 +10,6 @@ typedef std::bitset<8> SmallBlock;
 typedef std::bitset<15> ProductBlock;
 typedef std::deque<std::bitset<8>> SplitedBlock;
 
-SplitedBlock get_parts(const Block&);
+SplitedBlock split(const Block&);
 
 Block concatinate(const SplitedBlock&);
