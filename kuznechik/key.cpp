@@ -8,7 +8,6 @@ std::vector<SplitedBlock> get_constants() {
         SplitedBlock splited_block = split(Block(i));
         result.push_back(L(splited_block));
     }
-
     return result;
 }
 

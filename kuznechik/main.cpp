@@ -7,6 +7,7 @@
 #include "block.h"
 #include "lsx.h"
 #include "key.h"
+#include "kuznechik.h"
 
 
 int main(int argc, char** argv) {
@@ -35,6 +36,28 @@ int main(int argc, char** argv) {
             SplitedBlock result = LSX(splited_key, splited_input);
             std::cout << concatinate(result).to_string() << std::endl;
             return 0;
+        } else if (std::string(argv[1]) == "X") {
+            Block input(argv[2]);
+            Block key(argv[3]);
+            SplitedBlock splited_input = split(input);
+            SplitedBlock splited_key = split(key);
+            SplitedBlock result = X(splited_key, splited_input);
+            std::cout << concatinate(result).to_string() << std::endl;
+            return 0;
+        } else if (std::string(argv[1]) == "encrypt") {
+            std::bitset<256> key(argv[2]);
+            Block block(argv[3]);
+            SplitedBlock splited_block = split(block);
+            SplitedBlock result = encrypt(key, splited_block);
+            std::cout << concatinate(result).to_string() << std::endl;
+            return 0;
+        } else if (std::string(argv[1]) == "decrypt") {
+            std::bitset<256> key(argv[2]);
+            Block block(argv[3]);
+            SplitedBlock splited_block = split(block);
+            SplitedBlock result = decrypt(key, splited_block);
+            std::cout << concatinate(result).to_string() << std::endl;
+            return 0;
         } else {
             std::cout << "Wrong args format!" << std::endl;
             return 0;
@@ -50,6 +73,12 @@ int main(int argc, char** argv) {
             Block input(argv[2]);
             SplitedBlock splited_input = split(input);
             SplitedBlock result = L(splited_input);
+            std::cout << concatinate(result).to_string() << std::endl;
+            return 0;
+        } else if (std::string(argv[1]) == "S") {
+            Block input(argv[2]);
+            SplitedBlock splited_input = split(input);
+            SplitedBlock result = S(splited_input);
             std::cout << concatinate(result).to_string() << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "K") {

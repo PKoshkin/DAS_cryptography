@@ -25,7 +25,7 @@ SplitedBlock& L_inverse(SplitedBlock& a) {
     assert(a.size() == 16);
 
     for (std::size_t i = 0; i < 16; ++i) {
-        a = R(a);
+        a = R_inverse(a);
     }
     return a;
 }
@@ -77,5 +77,13 @@ SplitedBlock& R_inverse(SplitedBlock& a) {
 
 
 SplitedBlock& LSX(const SplitedBlock& k, SplitedBlock& a) {
+    assert(k.size() == 16);
+    assert(a.size() == 16);
     return L(S(X(k, a)));
+}
+
+SplitedBlock& LSX_inverse(const SplitedBlock& k, SplitedBlock& a) {
+    assert(k.size() == 16);
+    assert(a.size() == 16);
+    return S_inverse(L_inverse(X(k, a)));
 }
