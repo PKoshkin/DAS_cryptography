@@ -4,8 +4,6 @@
 
 #include "block.h"
 
-#include <iostream>
-
 
 template <std::size_t BLOCK_SIZE>
 std::size_t get_deg(const std::bitset<BLOCK_SIZE>& in_polynom) {
@@ -37,7 +35,6 @@ template <std::size_t BLOCK_SIZE>
 std::bitset<(BLOCK_SIZE - 1) / 2 + 1> get_mod(std::bitset<BLOCK_SIZE> dividend_polynom,
                                               const std::bitset<BLOCK_SIZE>& denominator_polynom) {
     int deg_diff = get_deg(dividend_polynom) - get_deg(denominator_polynom);
-    int counter = 0;
     while (deg_diff >= 0) {
         dividend_polynom ^= (denominator_polynom << deg_diff);
         deg_diff = get_deg(dividend_polynom) - get_deg(denominator_polynom);
