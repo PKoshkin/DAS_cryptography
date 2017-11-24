@@ -1,11 +1,11 @@
 #pragma once
 
-#include <bitset>
 #include <string>
-#include <deque>
 
 #include "polynom.h"
 #include "block.h"
 
+#include <iostream>
 
-SmallBlock l(const SplitedBlock&);
+
+unsigned short l(const Block);

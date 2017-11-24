@@ -1,22 +1,29 @@
 #include "block.h"
 
-SplitedBlock split(const Block& in_block) {
-    SplitedBlock result;
-    std::string in_string = in_block.to_string();
+
+Block block_from_string(const std::string& in_string) {
+    assert(in_string.length() == 128);
+    Block result;
     for (std::size_t i = 0; i < 16; ++i) {
-        // Сначала берем блоки из конца строки. Они соответствуют меньшим разрядам.
-        result.emplace_back(in_string.substr(128 - (i + 1) * 8, 8)); 
+        result[i] = static_cast<unsigned short>(std::bitset<8>(in_string.substr(8 * (15 - i), 8)).to_ulong());
     }
-    assert(result.size() == 16);
     return result;
 }
 
-Block concatinate(const SplitedBlock& in_parts) {
-    assert(in_parts.size() == 16);
-    std::string concatinate_string(in_parts[15].to_string());
-    for (int i = 14; i >= 0; --i) {
-        // Присоединяем с конца.
-        concatinate_string += in_parts[i].to_string();
+Key key_from_string(const std::string& in_string) {
+    assert(in_string.length() == 256);
+    Key result;
+    for (std::size_t i = 0; i < 32; ++i) {
+        result[i] = static_cast<unsigned short>(std::bitset<8>(in_string.substr(8 * (31 - i), 8)).to_ulong());
     }
-    return Block(concatinate_string);
+    return result;
+}
+
+
+std::string to_string(const Block in_block) {
+    std::string result;
+    for (int i = 15; i >= 0; --i) {
+        result += std::bitset<8>(in_block[i]).to_string();
+    }
+    return result;
 }

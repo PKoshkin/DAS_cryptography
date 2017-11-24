@@ -1,10 +1,9 @@
 #pragma once
 
 #include <cassert>
-#include <bitset>
 
 #include "block.h"
 
 
-SmallBlock pi(const SmallBlock&);
-SmallBlock pi_inverse(const SmallBlock&);
+unsigned short pi(const unsigned short);
+unsigned short pi_inverse(const unsigned short);

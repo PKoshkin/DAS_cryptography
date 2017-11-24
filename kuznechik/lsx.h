@@ -1,24 +1,24 @@
 #pragma once
 
-#include <bitset>
-#include <deque>
 #include <cassert>
 
 #include "l.h"
 #include "pi.h"
 #include "block.h"
 
+#include <iostream>
 
-SplitedBlock& X(const SplitedBlock&, SplitedBlock&);
 
-SplitedBlock& L(SplitedBlock&);
-SplitedBlock& L_inverse(SplitedBlock&);
+Block X(const Block, Block);
 
-SplitedBlock& S(SplitedBlock&);
-SplitedBlock& S_inverse(SplitedBlock&);
+Block L(Block);
+Block L_inverse(Block);
 
-SplitedBlock& R(SplitedBlock&);
-SplitedBlock& R_inverse(SplitedBlock&);
+Block S(Block);
+Block S_inverse(Block);
 
-SplitedBlock& LSX(const SplitedBlock&, SplitedBlock&);
-SplitedBlock& LSX_inverse(const SplitedBlock&, SplitedBlock&);
+Block R(Block);
+Block R_inverse(Block);
+
+Block LSX(const Block, Block);
+Block LSX_inverse(const Block, Block);

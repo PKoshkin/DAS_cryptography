@@ -1,8 +1,7 @@
 #include <iostream>
-#include <bitset>
 #include <string>
-#include <deque>
 #include <utility>
+#include <array>
 #include <chrono>
 
 #include "block.h"
@@ -14,15 +13,12 @@
 int main(int argc, char** argv) {
     if (argc == 5) {
         if (std::string(argv[1]) == "F") {
-            Block in_c(argv[2]);
-            Block in_k1(argv[3]);
-            Block in_k2(argv[4]);
-            SplitedBlock c = split(in_c);
-            SplitedBlock k1 = split(in_k1);
-            SplitedBlock k2 = split(in_k2);
+            Block c = block_from_string(argv[2]);
+            Block k1 = block_from_string(argv[3]);
+            Block k2 = block_from_string(argv[4]);
             auto result = F(c, k1, k2);
-            std::cout << concatinate(result.first).to_string() << std::endl;
-            std::cout << concatinate(result.second).to_string() << std::endl;
+            std::cout << to_string(result.first) << std::endl;
+            std::cout << to_string(result.second) << std::endl;
             return 0;
         } else {
             std::cout << "Wrong args format!" << std::endl;
@@ -30,34 +26,28 @@ int main(int argc, char** argv) {
         }
     } else if (argc == 4) {
         if (std::string(argv[1]) == "LSX") {
-            Block input(argv[2]);
-            Block key(argv[3]);
-            SplitedBlock splited_input = split(input);
-            SplitedBlock splited_key = split(key);
-            SplitedBlock result = LSX(splited_key, splited_input);
-            std::cout << concatinate(result).to_string() << std::endl;
+            Block input = block_from_string(argv[2]);
+            Block key = block_from_string(argv[3]);
+            Block result = LSX(key, input);
+            std::cout << to_string(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "X") {
-            Block input(argv[2]);
-            Block key(argv[3]);
-            SplitedBlock splited_input = split(input);
-            SplitedBlock splited_key = split(key);
-            SplitedBlock result = X(splited_key, splited_input);
-            std::cout << concatinate(result).to_string() << std::endl;
+            Block input = block_from_string(argv[2]);
+            Block key = block_from_string(argv[3]);
+            Block result = X(key, input);
+            std::cout << to_string(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "encrypt") {
-            std::bitset<256> key(argv[2]);
-            Block block(argv[3]);
-            SplitedBlock splited_block = split(block);
-            SplitedBlock result = encrypt(key, splited_block);
-            std::cout << concatinate(result).to_string() << std::endl;
+            Key key = key_from_string(argv[2]);
+            Block block = block_from_string(argv[3]);
+            Block result = encrypt(key, block);
+            std::cout << to_string(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "decrypt") {
-            std::bitset<256> key(argv[2]);
-            Block block(argv[3]);
-            SplitedBlock splited_block = split(block);
-            SplitedBlock result = decrypt(key, splited_block);
-            std::cout << concatinate(result).to_string() << std::endl;
+            Key key = key_from_string(argv[2]);
+            Block block = block_from_string(argv[3]);
+            Block result = decrypt(key, block);
+            std::cout << to_string(result) << std::endl;
             return 0;
         } else {
             std::cout << "Wrong args format!" << std::endl;
@@ -65,50 +55,37 @@ int main(int argc, char** argv) {
         }
     } else if (argc == 3) {
         if (std::string(argv[1]) == "R") {
-            Block input(argv[2]);
-            SplitedBlock splited_input = split(input);
-            SplitedBlock result = R(splited_input);
-            std::cout << concatinate(result).to_string() << std::endl;
+            Block input = block_from_string(argv[2]);
+            Block result = R(input);
+            std::cout << to_string(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "L") {
-            Block input(argv[2]);
-            SplitedBlock splited_input = split(input);
-            SplitedBlock result = L(splited_input);
-            std::cout << concatinate(result).to_string() << std::endl;
+            Block input = block_from_string(argv[2]);
+            Block result = L(input);
+            std::cout << to_string(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "S") {
-            Block input(argv[2]);
-            SplitedBlock splited_input = split(input);
-            SplitedBlock result = S(splited_input);
-            std::cout << concatinate(result).to_string() << std::endl;
+            Block input = block_from_string(argv[2]);
+            Block result = S(input);
+            std::cout << to_string(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "K") {
-            std::bitset<256> a(argv[2]);
-            std::vector<SplitedBlock> keys = get_keys(a);
-            assert(keys.size() == 10);
-            for (std::size_t i = 0; i < keys.size(); ++i) {
-                std::cout << concatinate(keys[i]).to_string() << std::endl;
+            Key a = key_from_string(argv[2]);
+            std::array<Block, 10> keys = get_keys(a);
+            for (std::size_t i = 0; i < 10; ++i) {
+                std::cout << to_string(keys[i]) << std::endl;
             }
             return 0;
         } else {
             std::cout << "Wrong args format!" << std::endl;
             return 0;
         }
-    } else if (argc == 2) {
-        if (std::string(argv[1]) == "C") {
-            auto constants = get_constants();
-            for (std::size_t i = 0; i < constants.size(); ++i) {
-                std::cout << concatinate(constants[i]).to_string() << std::endl;
-            }
-            return 0;
-        }
     } else if (argc == 1) {
-        std::bitset<256> key(std::string(256, '1'));
-        std::bitset<128> block(std::string(128, '0'));
-        auto splited_block = split(block);
+        Key key = key_from_string(std::string(256, '1'));
+        Block block = block_from_string(std::string(128, '0'));
         auto start = std::chrono::system_clock::now();
         for (std::size_t i = 0; i < 64; ++i) {
-            SplitedBlock result = encrypt(key, splited_block);
+            Block result = encrypt(key, block);
         }
         auto end = std::chrono::system_clock::now();
         std::chrono::duration<double> diff = end - start; // seconds to encode 1 MB

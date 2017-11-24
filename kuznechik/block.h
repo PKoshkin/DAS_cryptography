@@ -1,15 +1,14 @@
 #pragma once
 
-#include <bitset>
 #include <string>
-#include <deque>
+#include <bitset>
 #include <cassert>
+#include <array>
 
-typedef std::bitset<128> Block;
-typedef std::bitset<8> SmallBlock;
-typedef std::bitset<15> ProductBlock;
-typedef std::deque<std::bitset<8>> SplitedBlock;
+typedef std::array<unsigned short, 16> Block;
+typedef std::array<unsigned short, 32> Key;
 
-SplitedBlock split(const Block&);
+Block block_from_string(const std::string&);
+Key key_from_string(const std::string&);
 
-Block concatinate(const SplitedBlock&);
+std::string to_string(const Block);

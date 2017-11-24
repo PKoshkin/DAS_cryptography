@@ -1,16 +1,13 @@
 #pragma once
 
 #include <utility> //  для std::pair
-#include <vector>
-#include <deque>
-#include <bitset>
+#include <array>
+#include <algorithm>
 
 #include "block.h"
 #include "lsx.h" // Нужно L для генерации констант.
 
 
-std::vector<SplitedBlock> get_constants();
+std::pair<Block, Block> F(const Block, const Block, const Block);
 
-std::pair<SplitedBlock, SplitedBlock> F(const SplitedBlock&, const SplitedBlock&, const SplitedBlock&);
-
-std::vector<SplitedBlock> get_keys(const std::bitset<256>&);
+std::array<Block, 10> get_keys(const Key);
