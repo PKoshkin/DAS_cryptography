@@ -11,15 +11,20 @@ Block X(const Block k, Block a) {
 
 Block L(Block a) {
     for (std::size_t i = 0; i < 16; ++i) {
-        a = R(a);
+        Block r = R(a);
+        for (std::size_t j = 0; j < 16; ++j) {
+            a[j] = r[j];
+        }
+        //std::cout << to_string(a) << std::endl;
     }
-    return a;
+    return a;//R(R(R(R(R(R(R(R(R(R(R(R(R(R(R(R(a))))))))))))))));
 }
 
 Block L_inverse(Block a) {
     for (std::size_t i = 0; i < 16; ++i) {
         a = R_inverse(a);
     }
+
     return a;
 }
 

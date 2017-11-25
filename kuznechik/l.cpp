@@ -8,7 +8,7 @@ unsigned short l(const Block in_block) {
     };
 
     unsigned short denominator(451); // 111000011
-    unsigned short sum;
+    unsigned short sum = 0;
     for (std::size_t i = 0; i < 16; ++i) {
         unsigned short product = multiply(coefs[i], in_block[i]);
         sum ^= product;

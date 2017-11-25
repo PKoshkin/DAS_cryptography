@@ -18,7 +18,7 @@ unsigned short multiply(const unsigned short polynom_1, const unsigned short pol
     return get_mod(product_polynom, std::bitset<15>(451));
 }
 
-unsigned short get_mod(std::bitset<15> dividend_polynom, const std::bitset<15>& denominator_polynom) {
+unsigned short get_mod(std::bitset<15> dividend_polynom, std::bitset<15> denominator_polynom) {
     int deg_diff = get_deg(dividend_polynom) - get_deg(denominator_polynom);
     while (deg_diff >= 0) {
         dividend_polynom ^= (denominator_polynom << deg_diff);
