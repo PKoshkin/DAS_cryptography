@@ -24,7 +24,7 @@ std::array<Block, 10> get_keys(const Key key) {
         std::pair<Block, Block> keys = std::make_pair(result[2 * i - 2], result[2 * i - 1]);
         for (std::size_t j = 8 * (i - 1) + 1; j <= 8 * (i - 1) + 8; ++j) {
             constant[0] = j;
-            keys = F(constant, keys.first, keys.second);
+            keys = F(L(constant), keys.first, keys.second);
         }
         result[counter++] = keys.first;
         result[counter++] = keys.second;

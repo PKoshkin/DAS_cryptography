@@ -15,9 +15,8 @@ Block L(Block a) {
         for (std::size_t j = 0; j < 16; ++j) {
             a[j] = r[j];
         }
-        //std::cout << to_string(a) << std::endl;
     }
-    return a;//R(R(R(R(R(R(R(R(R(R(R(R(R(R(R(R(a))))))))))))))));
+    return a;
 }
 
 Block L_inverse(Block a) {
