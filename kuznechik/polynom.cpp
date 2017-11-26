@@ -1,6 +1,10 @@
 #include "polynom.h"
 
-unsigned short multiply(const unsigned short polynom_1, const unsigned short polynom_2) {
+unsigned short multiply(const unsigned short polynom_1, const unsigned short polynom_2, const MultiplyData& multiply_data) {
+    return multiply_data.multiply_map[multiply_data.index_map[polynom_1]][polynom_2];
+}
+
+unsigned short compute_multiply(const unsigned short polynom_1, const unsigned short polynom_2) {
     assert(polynom_1 < 256);
     assert(polynom_2 < 256);
     std::bitset<8> bitset_1(polynom_1);

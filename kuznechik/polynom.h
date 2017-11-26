@@ -3,6 +3,7 @@
 #include <bitset>
 
 #include "block.h"
+#include "data.h"
 
 #include <iostream>
 
@@ -19,6 +20,8 @@ std::size_t get_deg(const std::bitset<BLOCK_SIZE>& in_polynom) {
 }
 
 
-unsigned short multiply(const unsigned short, const unsigned short);
+unsigned short multiply(const unsigned short, const unsigned short, const MultiplyData&);
+
+unsigned short compute_multiply(const unsigned short, const unsigned short);
 
 unsigned short get_mod(std::bitset<15>, std::bitset<15>);

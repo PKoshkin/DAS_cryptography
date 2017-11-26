@@ -6,8 +6,9 @@
 
 #include "block.h"
 #include "lsx.h" // Нужно L для генерации констант.
+#include "data.h"
 
 
-std::pair<Block, Block> F(const Block, const Block, const Block);
+std::pair<Block, Block> F(const Block, const Block, const Block, const MultiplyData&);
 
-std::array<Block, 10> get_keys(const Key);
+std::array<Block, 10> get_keys(const Key, const MultiplyData&);

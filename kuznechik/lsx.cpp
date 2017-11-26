@@ -9,9 +9,9 @@ Block X(const Block k, Block a) {
 }
 
 
-Block L(Block a) {
+Block L(Block a, const MultiplyData& multiply_data) {
     for (std::size_t i = 0; i < 16; ++i) {
-        Block r = R(a);
+        Block r = R(a, multiply_data);
         for (std::size_t j = 0; j < 16; ++j) {
             a[j] = r[j];
         }
@@ -19,9 +19,9 @@ Block L(Block a) {
     return a;
 }
 
-Block L_inverse(Block a) {
+Block L_inverse(Block a, const MultiplyData& multiply_data) {
     for (std::size_t i = 0; i < 16; ++i) {
-        a = R_inverse(a);
+        a = R_inverse(a, multiply_data);
     }
 
     return a;
@@ -43,8 +43,8 @@ Block S_inverse(Block a) {
 }
 
 
-Block R(Block a) {
-    unsigned short mixed = l(a);
+Block R(Block a, const MultiplyData& multiply_data) {
+    unsigned short mixed = l(a, multiply_data);
     for (std::size_t i = 0; i <= 14; ++i) { // Идем до предпоследнего
         a[i] = a[i + 1];
     }
@@ -52,21 +52,21 @@ Block R(Block a) {
     return a;
 }
 
-Block R_inverse(Block a) {
+Block R_inverse(Block a, const MultiplyData& multiply_data) {
     unsigned short a_15 = a[15];
     for (int i = 15; i >= 1; --i) { // Идем до предпоследнего
         a[i] = a[i - 1];
     }
     a[0] = a_15;
-    a[0] = l(a);
+    a[0] = l(a, multiply_data);
     return a;
 }
 
 
-Block LSX(const Block k, Block a) {
-    return L(S(X(k, a)));
+Block LSX(const Block k, Block a, const MultiplyData& multiply_data) {
+    return L(S(X(k, a)), multiply_data);
 }
 
-Block LSX_inverse(const Block k, Block a) {
-    return S_inverse(L_inverse(X(k, a)));
+Block LSX_inverse(const Block k, Block a, const MultiplyData& multiply_data) {
+    return S_inverse(L_inverse(X(k, a), multiply_data));
 }

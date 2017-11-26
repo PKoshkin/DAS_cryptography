@@ -4,8 +4,7 @@
 
 #include "polynom.h"
 #include "block.h"
+#include "data.h"
 
-#include <iostream>
 
-
-unsigned short l(const Block);
+unsigned short l(const Block, const MultiplyData&);
