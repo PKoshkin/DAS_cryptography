@@ -45,11 +45,29 @@ int main(int argc, char** argv) {
             Block result = encrypt(key, block, data);
             std::cout << to_string(result) << std::endl;
             return 0;
+        } else if (std::string(argv[1]) == "encrypt_time") {
+            Key key = key_from_string(argv[2]);
+            Block block = block_from_string(argv[3]);
+            auto start = std::chrono::system_clock::now();
+            Block result = encrypt(key, block, data);
+            auto end = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            std::cout << diff.count() << std::endl; // time in seconds
+            return 0;
         } else if (std::string(argv[1]) == "decrypt") {
             Key key = key_from_string(argv[2]);
             Block block = block_from_string(argv[3]);
             Block result = decrypt(key, block, data);
             std::cout << to_string(result) << std::endl;
+            return 0;
+        } else if (std::string(argv[1]) == "decrypt_time") {
+            Key key = key_from_string(argv[2]);
+            Block block = block_from_string(argv[3]);
+            auto start = std::chrono::system_clock::now();
+            Block result = decrypt(key, block, data);
+            auto end = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            std::cout << diff.count() << std::endl; // time in seconds
             return 0;
         } else if (std::string(argv[1]) == "multiply") {
             unsigned short a = atoi(argv[2]);
@@ -94,17 +112,6 @@ int main(int argc, char** argv) {
             std::cout << "Wrong args format!" << std::endl;
             return 0;
         }
-    } else if (argc == 1) {
-        Key key = key_from_string(std::string(256, '1'));
-        Block block = block_from_string(std::string(128, '0'));
-        auto start = std::chrono::system_clock::now();
-        for (std::size_t i = 0; i < 64; ++i) {
-            Block result = encrypt(key, block, data);
-        }
-        auto end = std::chrono::system_clock::now();
-        std::chrono::duration<double> diff = end - start; // seconds to encode 1 MB
-        std::cout << 1 / diff.count() << " Mb per second\n";
-        return 0;
     } else {
         std::cout << "Wrong arguments number!" << std::endl;
         return 0;
