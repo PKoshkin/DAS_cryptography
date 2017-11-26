@@ -57,6 +57,12 @@ int main(int argc, char** argv) {
             unsigned short result = compute_multiply(a, b);
             std::cout << result << std::endl;
             return 0;
+        } else if (std::string(argv[1]) == "fast_multiply") {
+            unsigned short a = atoi(argv[2]);
+            unsigned short b = atoi(argv[3]);
+            unsigned short result = multiply(a, b, data);
+            std::cout << result << std::endl;
+            return 0;
         } else {
             std::cout << "Wrong args format!" << std::endl;
             return 0;
