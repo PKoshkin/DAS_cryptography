@@ -57,7 +57,6 @@ int main(int argc, char** argv) {
             unsigned short result = compute_multiply(a, b);
             std::cout << result << std::endl;
             return 0;
-            
         } else {
             std::cout << "Wrong args format!" << std::endl;
             return 0;
