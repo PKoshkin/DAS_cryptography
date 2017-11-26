@@ -11,10 +11,7 @@ Block X(const Block k, Block a) {
 
 Block L(Block a, const MultiplyData& multiply_data) {
     for (std::size_t i = 0; i < 16; ++i) {
-        Block r = R(a, multiply_data);
-        for (std::size_t j = 0; j < 16; ++j) {
-            a[j] = r[j];
-        }
+        a = R(a, multiply_data);
     }
     return a;
 }
