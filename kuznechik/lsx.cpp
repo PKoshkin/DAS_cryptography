@@ -20,7 +20,6 @@ Block L_inverse(Block a, const MultiplyData& multiply_data) {
     for (std::size_t i = 0; i < 16; ++i) {
         a = R_inverse(a, multiply_data);
     }
-
     return a;
 }
 

@@ -15,6 +15,6 @@ for i in range(100):
             make_random_input(256),
             make_random_input(128)
         ), shell=True).decode("utf-8")[:-1])
-    speeds.append(1 / mb_time)
+    speeds.append(1 / (mb_time * 1024))
 
 print(np.min(speeds), np.mean(speeds), np.max(speeds))
