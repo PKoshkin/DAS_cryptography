@@ -11,7 +11,7 @@ speeds = []
 for i in range(100):
     mb_time = 0
     for _ in range(64):
-        mb_time += float(subprocess.check_output("./kuznechik encrypt_time {} {}".format(
+        mb_time += float(subprocess.check_output("./kuznechik decrypt_time {} {}".format(
             make_random_input(256),
             make_random_input(128)
         ), shell=True).decode("utf-8")[:-1])
