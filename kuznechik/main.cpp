@@ -71,13 +71,13 @@ int main(int argc, char** argv) {
         } else if (std::string(argv[1]) == "multiply") {
             std::uint8_t a = atoi(argv[2]);
             std::uint8_t b = atoi(argv[3]);
-            std::uint8_t result = compute_multiply(a, b);
+            std::uint8_t result = multiply(a, b);
             std::cout << unsigned(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "fast_multiply") {
             std::uint8_t a = atoi(argv[2]);
             std::uint8_t b = atoi(argv[3]);
-            std::uint8_t result = multiply(a, b, data);
+            std::uint8_t result = fast_multiply(a, b, data);
             std::cout << unsigned(result) << std::endl;
             return 0;
         } else {

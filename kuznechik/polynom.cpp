@@ -1,10 +1,10 @@
 #include "polynom.h"
 
-std::uint8_t multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2, const MultiplyData& multiply_data) {
+std::uint8_t fast_multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2, const MultiplyData& multiply_data) {
     return multiply_data.multiply_map[polynom_1][polynom_2];
 }
 
-std::uint8_t compute_multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2) {
+std::uint8_t multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2) {
     assert(polynom_1 < 256);
     assert(polynom_2 < 256);
     std::bitset<8> bitset_1(polynom_1);
