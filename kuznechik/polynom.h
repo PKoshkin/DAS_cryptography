@@ -20,7 +20,7 @@ std::size_t get_deg(const std::bitset<BLOCK_SIZE>& in_polynom) {
 }
 
 
-std::uint8_t fast_multiply(const std::uint8_t, const std::uint8_t, const MultiplyData&);
+std::uint8_t fast_multiply(const std::uint8_t, const std::uint8_t, const Data&);
 
 std::uint8_t multiply(const std::uint8_t, const std::uint8_t);
 

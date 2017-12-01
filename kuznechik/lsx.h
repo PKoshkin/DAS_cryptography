@@ -12,14 +12,16 @@
 
 Block X(const Block, Block);
 
-Block L(Block, const MultiplyData&);
-Block L_inverse(Block, const MultiplyData&);
+Block L(Block, const Data&);
+Block L_fast(Block, const Data&);
+Block L_inverse(Block, const Data&);
+Block L_inverse_fast(Block, const Data&);
 
 Block S(Block);
 Block S_inverse(Block);
 
-Block R(Block, const MultiplyData&);
-Block R_inverse(Block, const MultiplyData&);
+Block R(Block, const Data&);
+Block R_inverse(Block, const Data&);
 
-Block LSX(const Block, Block, const MultiplyData&);
-Block LSX_inverse(const Block, Block, const MultiplyData&);
+Block LSX(const Block, Block, const Data&);
+Block LSX_inverse(const Block, Block, const Data&);

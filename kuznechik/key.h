@@ -9,6 +9,6 @@
 #include "data.h"
 
 
-std::pair<Block, Block> F(const Block, const Block, const Block, const MultiplyData&);
+std::pair<Block, Block> F(const Block, const Block, const Block, const Data&);
 
-std::array<Block, 10> get_keys(const Key, const MultiplyData&);
+std::array<Block, 10> get_keys(const Key, const Data&);

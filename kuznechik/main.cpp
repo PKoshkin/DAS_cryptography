@@ -11,7 +11,7 @@
 #include "data.h"
 
 int main(int argc, char** argv) {
-    MultiplyData data("multiply_map.txt");
+    Data data("multiply_map.txt", "L_matrix.txt", "L_inverse_matrix.txt");
     if (argc == 5) {
         if (std::string(argv[1]) == "F") {
             Block c = block_from_string(argv[2]);
@@ -95,6 +95,16 @@ int main(int argc, char** argv) {
             Block result = L(input, data);
             std::cout << to_string(result) << std::endl;
             return 0;
+        } else if (std::string(argv[1]) == "L_inverse") {
+            Block input = block_from_string(argv[2]);
+            Block result = L_inverse(input, data);
+            std::cout << to_string(result) << std::endl;
+            return 0;
+        } else if (std::string(argv[1]) == "L_fast") {
+            Block input = block_from_string(argv[2]);
+            Block result = L_fast(input, data);
+            std::cout << to_string(result) << std::endl;
+            return 0;
         } else if (std::string(argv[1]) == "S") {
             Block input = block_from_string(argv[2]);
             Block result = S(input);
@@ -106,6 +116,33 @@ int main(int argc, char** argv) {
             for (std::size_t i = 0; i < 10; ++i) {
                 std::cout << to_string(keys[i]) << std::endl;
             }
+            return 0;
+        } else {
+            std::cout << "Wrong args format!" << std::endl;
+            return 0;
+        }
+    } else if (argc == 2) {
+        if (std::string(argv[1]) == "encrypt_speed") {
+            Key key = key_from_string(std::string(256, '0'));
+            Block block = block_from_string(std::string(128, '0'));
+            auto start = std::chrono::system_clock::now();
+            for (std::size_t i = 0; i < 64; ++i) {
+                Block result = encrypt(key, block, data);
+            }
+            auto end = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            std::cout << 1 / (diff.count() * 1024) << std::endl; // time in seconds
+            return 0;
+        } else if (std::string(argv[1]) == "decrypt_speed") {
+            Key key = key_from_string(std::string(256, '0'));
+            Block block = block_from_string(std::string(128, '0'));
+            auto start = std::chrono::system_clock::now();
+            for (std::size_t i = 0; i < 64; ++i) {
+                Block result = decrypt(key, block, data);
+            }
+            auto end = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            std::cout << 1 / (diff.count() * 1024) << std::endl; // time in seconds
             return 0;
         } else {
             std::cout << "Wrong args format!" << std::endl;

@@ -37,7 +37,7 @@ def from_array_to_2(array):
 
 def from_2_to_array(string):
     result = []
-    for i in range(0, len(string), 8):
+    for i in range(len(string) - 8, -1, -8):
         result.append(int(string[i:(i + 8)], 2))
     return result
 
@@ -50,6 +50,13 @@ def from_16_to_array(string):
 def L(block):
     return from_2_to_16(
         subprocess.check_output("./kuznechik L {}".format(
+            from_16_to_2(block)
+        ), shell=True).decode("utf-8")[:-1]
+    )
+
+def L_inverse(block):
+    return from_2_to_16(
+        subprocess.check_output("./kuznechik L_inverse {}".format(
             from_16_to_2(block)
         ), shell=True).decode("utf-8")[:-1]
     )
@@ -88,3 +95,13 @@ def decrypt(key, block):
             from_16_to_2(key), from_16_to_2(block)
         ), shell=True).decode("utf-8")[:-1]
     )
+
+def multiply(a, b):
+    return int(subprocess.check_output("./kuznechik multiply {} {}".format(
+        a, b
+    ), shell=True).decode("utf-8")[:-1])
+
+def fast_multiply(a, b):
+    return int(subprocess.check_output("./kuznechik fast_multiply {} {}".format(
+        a, b
+    ), shell=True).decode("utf-8")[:-1])

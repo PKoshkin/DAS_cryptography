@@ -1,7 +1,7 @@
 #include "polynom.h"
 
-std::uint8_t fast_multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2, const MultiplyData& multiply_data) {
-    return multiply_data.multiply_map[polynom_1][polynom_2];
+std::uint8_t fast_multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2, const Data& data) {
+    return data.multiply_map[polynom_1][polynom_2];
 }
 
 std::uint8_t multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2) {

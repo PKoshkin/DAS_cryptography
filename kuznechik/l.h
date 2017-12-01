@@ -7,4 +7,4 @@
 #include "data.h"
 
 
-std::uint8_t l(const Block, const MultiplyData&);
+std::uint8_t l(const Block, const Data&);

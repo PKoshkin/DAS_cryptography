@@ -8,5 +8,5 @@
 #include "data.h"
 
 
-Block encrypt(const Key, Block, const MultiplyData&);
-Block decrypt(const Key, Block, const MultiplyData&);
+Block encrypt(const Key, Block, const Data&);
+Block decrypt(const Key, Block, const Data&);
