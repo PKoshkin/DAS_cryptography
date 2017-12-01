@@ -29,6 +29,23 @@ def from_2_to_16(string):
         result += map_dict[string[i:(i + 4)]]
     return result
 
+def from_array_to_2(array):
+    result = ''
+    for value in reversed(array):
+        result += '0' * (8 - len(bin(value)[2:])) + bin(value)[2:]
+    return result
+
+def from_2_to_array(string):
+    result = []
+    for i in range(0, len(string), 8):
+        result.append(int(string[i:(i + 8)], 2))
+    return result
+
+def from_array_to_16(array):
+    return from_2_to_16(from_array_to_2(array))
+    
+def from_16_to_array(string):
+    return from_2_to_array(from_16_to_2(string))
 
 def L(block):
     return from_2_to_16(
