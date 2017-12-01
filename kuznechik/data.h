@@ -3,11 +3,11 @@
 #include <array>
 #include <string>
 #include <fstream>
+#include <cstdint>
 
 
 struct MultiplyData {
-    std::array<unsigned short, 256> index_map;
-    std::array<std::array<unsigned short, 256>, 8> multiply_map;
+    std::array<std::array<std::uint8_t, 256>, 256> multiply_map;
 
-    MultiplyData(std::string, std::string);
+    MultiplyData(std::string);
 };

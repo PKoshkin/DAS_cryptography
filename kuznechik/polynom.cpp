@@ -1,10 +1,10 @@
 #include "polynom.h"
 
-unsigned short multiply(const unsigned short polynom_1, const unsigned short polynom_2, const MultiplyData& multiply_data) {
-    return multiply_data.multiply_map[multiply_data.index_map[polynom_1]][polynom_2];
+std::uint8_t multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2, const MultiplyData& multiply_data) {
+    return multiply_data.multiply_map[polynom_1][polynom_2];
 }
 
-unsigned short compute_multiply(const unsigned short polynom_1, const unsigned short polynom_2) {
+std::uint8_t compute_multiply(const std::uint8_t polynom_1, const std::uint8_t polynom_2) {
     assert(polynom_1 < 256);
     assert(polynom_2 < 256);
     std::bitset<8> bitset_1(polynom_1);
@@ -22,12 +22,12 @@ unsigned short compute_multiply(const unsigned short polynom_1, const unsigned s
     return get_mod(product_polynom, std::bitset<15>(451));
 }
 
-unsigned short get_mod(std::bitset<15> dividend_polynom, std::bitset<15> denominator_polynom) {
+std::uint8_t get_mod(std::bitset<15> dividend_polynom, std::bitset<15> denominator_polynom) {
     int deg_diff = get_deg(dividend_polynom) - get_deg(denominator_polynom);
     while (deg_diff >= 0) {
         dividend_polynom ^= (denominator_polynom << deg_diff);
         deg_diff = get_deg(dividend_polynom) - get_deg(denominator_polynom);
     }
     // Остаток, который надо вернуть лежит в dividend_polynom. Только надо отрезать нули в начале.
-    return static_cast<unsigned short>(dividend_polynom.to_ulong());
+    return static_cast<std::uint8_t>(dividend_polynom.to_ulong());
 }

@@ -5,5 +5,5 @@
 #include "block.h"
 
 
-unsigned short pi(const unsigned short);
-unsigned short pi_inverse(const unsigned short);
+std::uint8_t pi(const std::uint8_t);
+std::uint8_t pi_inverse(const std::uint8_t);

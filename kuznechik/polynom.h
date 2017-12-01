@@ -20,8 +20,8 @@ std::size_t get_deg(const std::bitset<BLOCK_SIZE>& in_polynom) {
 }
 
 
-unsigned short multiply(const unsigned short, const unsigned short, const MultiplyData&);
+std::uint8_t multiply(const std::uint8_t, const std::uint8_t, const MultiplyData&);
 
-unsigned short compute_multiply(const unsigned short, const unsigned short);
+std::uint8_t compute_multiply(const std::uint8_t, const std::uint8_t);
 
-unsigned short get_mod(std::bitset<15>, std::bitset<15>);
+std::uint8_t get_mod(std::bitset<15>, std::bitset<15>);

@@ -10,9 +10,8 @@
 #include "kuznechik.h"
 #include "data.h"
 
-
 int main(int argc, char** argv) {
-    MultiplyData data("index_map.txt", "multiply_map.txt");
+    MultiplyData data("multiply_map.txt");
     if (argc == 5) {
         if (std::string(argv[1]) == "F") {
             Block c = block_from_string(argv[2]);
@@ -70,16 +69,16 @@ int main(int argc, char** argv) {
             std::cout << diff.count() << std::endl; // time in seconds
             return 0;
         } else if (std::string(argv[1]) == "multiply") {
-            unsigned short a = atoi(argv[2]);
-            unsigned short b = atoi(argv[3]);
-            unsigned short result = compute_multiply(a, b);
-            std::cout << result << std::endl;
+            std::uint8_t a = atoi(argv[2]);
+            std::uint8_t b = atoi(argv[3]);
+            std::uint8_t result = compute_multiply(a, b);
+            std::cout << unsigned(result) << std::endl;
             return 0;
         } else if (std::string(argv[1]) == "fast_multiply") {
-            unsigned short a = atoi(argv[2]);
-            unsigned short b = atoi(argv[3]);
-            unsigned short result = multiply(a, b, data);
-            std::cout << result << std::endl;
+            std::uint8_t a = atoi(argv[2]);
+            std::uint8_t b = atoi(argv[3]);
+            std::uint8_t result = multiply(a, b, data);
+            std::cout << unsigned(result) << std::endl;
             return 0;
         } else {
             std::cout << "Wrong args format!" << std::endl;

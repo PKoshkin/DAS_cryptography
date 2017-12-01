@@ -29,6 +29,7 @@ def from_2_to_16(string):
         result += map_dict[string[i:(i + 4)]]
     return result
 
+
 def L(block):
     return from_2_to_16(
         subprocess.check_output("./kuznechik L {}".format(

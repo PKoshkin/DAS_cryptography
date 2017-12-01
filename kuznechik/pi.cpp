@@ -1,9 +1,9 @@
 #include "pi.h"
 
 
-unsigned short pi(const unsigned short a) {
+std::uint8_t pi(const std::uint8_t a) {
     assert(a < 256);
-    const unsigned short mapping_array[256] = {
+    const std::uint8_t mapping_array[256] = {
         252, 238, 221, 17, 207, 110, 49, 22, 251, 196, 250, 218, 35, 197, 4, 77,
         233, 119, 240, 219, 147, 46, 153, 186, 23, 54, 241, 187, 20, 205, 95, 193,
         249, 24, 101, 90, 226, 92, 239, 33, 129, 28, 60, 66, 139, 1, 142, 79,
@@ -25,9 +25,9 @@ unsigned short pi(const unsigned short a) {
 }
 
 
-unsigned short pi_inverse(const unsigned short a) {
+std::uint8_t pi_inverse(const std::uint8_t a) {
     assert(a < 256);
-    const unsigned short inverse_mapping_array[256] = {
+    const std::uint8_t inverse_mapping_array[256] = {
         165, 45, 50, 143, 14, 48, 56, 192, 84, 230, 158, 57, 85, 126, 82, 145,
         100, 3, 87, 90, 28, 96, 7, 24, 33, 114, 168, 209, 41, 198, 164, 63,
         224, 39, 141, 12, 130, 234, 174, 180, 154, 99, 73, 229, 66, 228, 21, 183,

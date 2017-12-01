@@ -41,7 +41,7 @@ Block S_inverse(Block a) {
 
 
 Block R(Block a, const MultiplyData& multiply_data) {
-    unsigned short mixed = l(a, multiply_data);
+    std::uint8_t mixed = l(a, multiply_data);
     for (std::size_t i = 0; i <= 14; ++i) { // Идем до предпоследнего
         a[i] = a[i + 1];
     }
@@ -50,7 +50,7 @@ Block R(Block a, const MultiplyData& multiply_data) {
 }
 
 Block R_inverse(Block a, const MultiplyData& multiply_data) {
-    unsigned short a_15 = a[15];
+    std::uint8_t a_15 = a[15];
     for (int i = 15; i >= 1; --i) { // Идем до предпоследнего
         a[i] = a[i - 1];
     }
