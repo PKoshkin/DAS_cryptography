@@ -1,7 +1,7 @@
 #include "lsx.h"
 
 
-Block X(const Block k, Block a) {
+Block& X(const Block k, Block& a) {
     for (std::size_t i = 0; i < 16; ++i) {
         a[i] ^= k[i];
     }
@@ -9,7 +9,7 @@ Block X(const Block k, Block a) {
 }
 
 
-Block L(Block a, const Data& data) {
+Block& L(Block& a, const Data& data) {
     for (std::size_t i = 0; i < 16; ++i) {
         a = R(a, data);
     }
@@ -28,7 +28,7 @@ Block L_fast(Block a, const Data& data) {
     return result;
 }
 
-Block L_inverse(Block a, const Data& data) {
+Block& L_inverse(Block& a, const Data& data) {
     for (std::size_t i = 0; i < 16; ++i) {
         a = R_inverse(a, data);
     }
@@ -63,7 +63,7 @@ Block S_inverse(Block a) {
 }
 
 
-Block R(Block a, const Data& data) {
+Block& R(Block& a, const Data& data) {
     std::uint8_t mixed = l(a, data);
     for (std::size_t i = 0; i <= 14; ++i) { // Идем до предпоследнего
         a[i] = a[i + 1];
@@ -72,7 +72,7 @@ Block R(Block a, const Data& data) {
     return a;
 }
 
-Block R_inverse(Block a, const Data& data) {
+Block& R_inverse(Block& a, const Data& data) {
     std::uint8_t a_15 = a[15];
     for (int i = 15; i >= 1; --i) { // Идем до предпоследнего
         a[i] = a[i - 1];
