@@ -6,11 +6,22 @@
 #include <bitset>
 
 #include "data.h"
+#include "LS_matrix.h"
 
 const std::size_t NUMBER_OF_ROUNDS = 10;
 const std::size_t BLOCK_LEN_IN_BYTES = 16;
 const std::size_t KEY_LENGTH_IN_BYTES = 32;
 const std::size_t NUMBER_OF_ROUNDS_IN_KEY_SCHEDULE = 8;
+
+void apply_LS(std::uint8_t* block) {
+    std::uint8_t result[BLOCK_LEN_IN_BYTES] = {0};
+    for (std::uint8_t i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
+        for (std::uint8_t j = 0; j < BLOCK_LEN_IN_BYTES; ++j) {
+            result[j] ^= LS_matrix[i][block[i]][j];
+        }
+    }
+    std::memcpy(block, result, BLOCK_LEN_IN_BYTES);
+}
 
 
 void block_from_string(const std::string& in_string, std::uint8_t* result, std::size_t size=16) {
@@ -28,20 +39,20 @@ std::string to_string(const std::uint8_t* in_block, std::size_t size=16) {
 }
 
 
-static void swap_blocks(std::uint8_t* left, std::uint8_t* right, std::uint8_t* tmp) {
+void swap_blocks(std::uint8_t* left, std::uint8_t* right, std::uint8_t* tmp) {
     std::memcpy(tmp, left, BLOCK_LEN_IN_BYTES);
     std::memcpy(left, right, BLOCK_LEN_IN_BYTES);
     std::memcpy(right, tmp, BLOCK_LEN_IN_BYTES);
 }
 
 
-static void apply_S(std::uint8_t* block) {
+void apply_S(std::uint8_t* block) {
     for (int byte_index = 0; byte_index < BLOCK_LEN_IN_BYTES; ++byte_index) {
         block[byte_index] = pi[block[byte_index]];
     }
 }
 
-static void do_L(const std::uint8_t* input, std::uint8_t* output) {
+void do_L(const std::uint8_t* input, std::uint8_t* output) {
     for (int byte_index = 0; byte_index < BLOCK_LEN_IN_BYTES; ++byte_index) {
         std::uint8_t component = 0x00;
         for (int addend_index = 0; addend_index < BLOCK_LEN_IN_BYTES; ++addend_index) {
@@ -51,20 +62,30 @@ static void do_L(const std::uint8_t* input, std::uint8_t* output) {
     }
 }
 
-static void do_X(const std::uint8_t* key, const std::uint8_t* input, std::uint8_t* output) {
+void do_X(const std::uint8_t* key, const std::uint8_t* input, std::uint8_t* output) {
     for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
         output[i] = input[i] ^ key[i];
     }
 }
 
-static void apply_LSX(const std::uint8_t* key, std::uint8_t* block, std::uint8_t* tmp) {
+void apply_X(const std::uint8_t* key, std::uint8_t* block) {
+    for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
+        block[i] ^= key[i];
+    }
+}
+
+void apply_LSX(const std::uint8_t* key, std::uint8_t* block, std::uint8_t* tmp) {
+    apply_X(key, block);
+    apply_LS(block);
+/*
     do_X(key, block, tmp);
     apply_S(tmp);
     do_L(tmp, block);
+*/
 }
 
 
-static void apply_F(
+void apply_F(
     const std::uint8_t* key, std::uint8_t* left, std::uint8_t* right,
     std::uint8_t* tmp1, std::uint8_t* tmp2
 ) {
@@ -74,7 +95,7 @@ static void apply_F(
     swap_blocks(left, right, tmp2);
 }
 
-static void do_round_keys(
+void do_round_keys(
     const std::uint8_t* key, std::uint8_t* round_keys,
     std::uint8_t* tmp1, std::uint8_t* tmp2
 ) {
@@ -98,7 +119,7 @@ static void do_round_keys(
 }
 
 
-static void encrypt(const std::uint8_t* key, std::uint8_t* block) {
+void encrypt(const std::uint8_t* key, std::uint8_t* block) {
     std::uint8_t cache[BLOCK_LEN_IN_BYTES * 2] = {0};
     std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
     do_round_keys(key, round_keys, &cache[0], &cache[BLOCK_LEN_IN_BYTES]);
