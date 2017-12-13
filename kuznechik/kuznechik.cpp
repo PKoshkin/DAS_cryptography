@@ -74,30 +74,25 @@ static void apply_X(const std::uint8_t* key, std::uint8_t* block) {
     }
 }
 
-static void apply_LSX(const std::uint8_t* key, std::uint8_t* block, std::uint8_t* tmp) {
+static void apply_LSX(const std::uint8_t* key, std::uint8_t* block) {
     apply_X(key, block);
     apply_LS(block);
-/*
-    do_X(key, block, tmp);
-    apply_S(tmp);
-    do_L(tmp, block);
-*/
 }
 
 
 static void apply_F(
     const std::uint8_t* key, std::uint8_t* left, std::uint8_t* right,
-    std::uint8_t* tmp1, std::uint8_t* tmp2
+    std::uint8_t* tmp
 ) {
-    std::memcpy(tmp1, left, BLOCK_LEN_IN_BYTES);
-    apply_LSX(key, tmp1, tmp2);
-    do_X(tmp1, right, right);
-    swap_blocks(left, right, tmp2);
+    std::memcpy(tmp, left, BLOCK_LEN_IN_BYTES);
+    apply_LSX(key, tmp);
+    apply_X(tmp, right);
+    swap_blocks(left, right, tmp);
 }
 
 static void do_round_keys(
     const std::uint8_t* key, std::uint8_t* round_keys,
-    std::uint8_t* tmp1, std::uint8_t* tmp2
+    std::uint8_t* tmp
 ) {
     std::memcpy(round_keys, key, BLOCK_LEN_IN_BYTES * 2);
     for (int i = 1; i <= 4; ++i) {
@@ -111,8 +106,7 @@ static void do_round_keys(
                  round_constants[(j - 1)],
                  &round_keys[BLOCK_LEN_IN_BYTES * (i * 2)],
                  &round_keys[BLOCK_LEN_IN_BYTES * (i * 2 + 1)],
-                 tmp1,
-                 tmp2
+                 tmp
             );
         }
     }
@@ -120,12 +114,11 @@ static void do_round_keys(
 
 
 static void apply_encrypt(const std::uint8_t* key, const std::uint8_t* round_keys, std::uint8_t* block) {
-    std::uint8_t cache[BLOCK_LEN_IN_BYTES * 2] = {0};
     // Последний раунд не полный
     for (int round_index = 0; round_index < NUMBER_OF_ROUNDS - 1; ++round_index) {
-        apply_LSX(&round_keys[BLOCK_LEN_IN_BYTES * round_index], block, cache);
+        apply_LSX(&round_keys[BLOCK_LEN_IN_BYTES * round_index], block);
     }
-    do_X(&round_keys[BLOCK_LEN_IN_BYTES * (NUMBER_OF_ROUNDS - 1)], block, block);
+    apply_X(&round_keys[BLOCK_LEN_IN_BYTES * (NUMBER_OF_ROUNDS - 1)], block);
 }
 
 int main(int argc, char** argv) {
@@ -137,7 +130,7 @@ int main(int argc, char** argv) {
             block_from_string(std::string(argv[3]), block);
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
             std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
-            do_round_keys(key, round_keys, cache, &cache[BLOCK_LEN_IN_BYTES]);
+            do_round_keys(key, round_keys, cache);
             apply_encrypt(key, round_keys, block);
             std::cout << to_string(block) << std::endl;
             return 0;
@@ -148,7 +141,7 @@ int main(int argc, char** argv) {
             std::uint8_t key[BLOCK_LEN_IN_BYTES* 2] = {1};
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
             std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
-            do_round_keys(key, round_keys, cache, &cache[BLOCK_LEN_IN_BYTES]);
+            do_round_keys(key, round_keys, cache);
 
             auto start = std::chrono::system_clock::now();
             for (std::size_t i = 0; i < 64 * 1024; ++i) {
