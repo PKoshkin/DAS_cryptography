@@ -13,6 +13,7 @@ const std::size_t BLOCK_LEN_IN_BYTES = 16;
 const std::size_t KEY_LENGTH_IN_BYTES = 32;
 const std::size_t NUMBER_OF_ROUNDS_IN_KEY_SCHEDULE = 8;
 
+
 static void apply_LS(std::uint8_t* block) {
     std::uint8_t result[BLOCK_LEN_IN_BYTES] = {0};
     for (std::uint8_t i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
@@ -113,7 +114,7 @@ static void do_round_keys(
 }
 
 
-static void apply_encrypt(const std::uint8_t* key, const std::uint8_t* round_keys, std::uint8_t* block) {
+static void apply_encrypt(const std::uint8_t* round_keys, std::uint8_t* block) {
     // Последний раунд не полный
     for (int round_index = 0; round_index < NUMBER_OF_ROUNDS - 1; ++round_index) {
         apply_LSX(&round_keys[BLOCK_LEN_IN_BYTES * round_index], block);
@@ -131,7 +132,7 @@ int main(int argc, char** argv) {
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
             std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
             do_round_keys(key, round_keys, cache);
-            apply_encrypt(key, round_keys, block);
+            apply_encrypt(round_keys, block);
             std::cout << to_string(block) << std::endl;
             return 0;
         }
@@ -145,7 +146,7 @@ int main(int argc, char** argv) {
 
             auto start = std::chrono::system_clock::now();
             for (std::size_t i = 0; i < 64 * 1024; ++i) {
-                apply_encrypt(key, round_keys, block);
+                apply_encrypt(round_keys, block);
             }
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> diff = end - start;
