@@ -14,7 +14,7 @@ const std::size_t KEY_LENGTH_IN_BYTES = 32;
 const std::size_t NUMBER_OF_ROUNDS_IN_KEY_SCHEDULE = 8;
 
 
-static void apply_LS(std::uint8_t* block) {
+static void apply_LS(std::uint8_t block[16]) {
     std::uint8_t result[BLOCK_LEN_IN_BYTES] = {0};
     for (std::uint8_t i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
         for (std::uint8_t j = 0; j < BLOCK_LEN_IN_BYTES; ++j) {
@@ -25,13 +25,13 @@ static void apply_LS(std::uint8_t* block) {
 }
 
 
-static void block_from_string(const std::string& in_string, std::uint8_t* result, std::size_t size=16) {
+static void block_from_string(const std::string& in_string, std::uint8_t result[16], std::size_t size=16) {
     for (std::size_t i = 0; i < size; ++i) {
         result[i] = static_cast<std::uint8_t>(std::bitset<8>(in_string.substr(i * 8, 8)).to_ulong());
     }
 }
 
-static std::string to_string(const std::uint8_t* in_block, std::size_t size=16) {
+static std::string to_string(const std::uint8_t in_block[16], std::size_t size=16) {
     std::string result;
     for (int i = 0; i < size; ++i) {
         result += std::bitset<8>(in_block[i]).to_string();
@@ -40,20 +40,20 @@ static std::string to_string(const std::uint8_t* in_block, std::size_t size=16) 
 }
 
 
-static void swap_blocks(std::uint8_t* left, std::uint8_t* right, std::uint8_t* tmp) {
+static void swap_blocks(std::uint8_t left[16], std::uint8_t right[16], std::uint8_t tmp[16]) {
     std::memcpy(tmp, left, BLOCK_LEN_IN_BYTES);
     std::memcpy(left, right, BLOCK_LEN_IN_BYTES);
     std::memcpy(right, tmp, BLOCK_LEN_IN_BYTES);
 }
 
 
-static void apply_S(std::uint8_t* block) {
+static void apply_S(std::uint8_t block[16]) {
     for (int byte_index = 0; byte_index < BLOCK_LEN_IN_BYTES; ++byte_index) {
         block[byte_index] = pi[block[byte_index]];
     }
 }
 
-static void do_L(const std::uint8_t* input, std::uint8_t* output) {
+static void do_L(const std::uint8_t input[16], std::uint8_t output[16]) {
     for (int byte_index = 0; byte_index < BLOCK_LEN_IN_BYTES; ++byte_index) {
         std::uint8_t component = 0x00;
         for (int addend_index = 0; addend_index < BLOCK_LEN_IN_BYTES; ++addend_index) {
@@ -63,27 +63,27 @@ static void do_L(const std::uint8_t* input, std::uint8_t* output) {
     }
 }
 
-static void do_X(const std::uint8_t* key, const std::uint8_t* input, std::uint8_t* output) {
+static void do_X(const std::uint8_t key[16], const std::uint8_t input[16], std::uint8_t output[16]) {
     for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
         output[i] = input[i] ^ key[i];
     }
 }
 
-static void apply_X(const std::uint8_t* key, std::uint8_t* block) {
+static void apply_X(const std::uint8_t key[16], std::uint8_t block[16]) {
     for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
         block[i] ^= key[i];
     }
 }
 
-static void apply_LSX(const std::uint8_t* key, std::uint8_t* block) {
+static void apply_LSX(const std::uint8_t key[16], std::uint8_t block[16]) {
     apply_X(key, block);
     apply_LS(block);
 }
 
 
 static void apply_F(
-    const std::uint8_t* key, std::uint8_t* left, std::uint8_t* right,
-    std::uint8_t* tmp
+    const std::uint8_t key[16], std::uint8_t left[16], std::uint8_t right[16],
+    std::uint8_t tmp[16]
 ) {
     std::memcpy(tmp, left, BLOCK_LEN_IN_BYTES);
     apply_LSX(key, tmp);
@@ -92,8 +92,8 @@ static void apply_F(
 }
 
 static void do_round_keys(
-    const std::uint8_t* key, std::uint8_t* round_keys,
-    std::uint8_t* tmp
+    const std::uint8_t key[16], std::uint8_t round_keys[16],
+    std::uint8_t tmp[16]
 ) {
     std::memcpy(round_keys, key, BLOCK_LEN_IN_BYTES * 2);
     for (int i = 1; i <= 4; ++i) {
@@ -114,7 +114,7 @@ static void do_round_keys(
 }
 
 
-static void apply_encrypt(const std::uint8_t* round_keys, std::uint8_t* block) {
+static void apply_encrypt(const std::uint8_t round_keys[16], std::uint8_t block[16]) {
     // Последний раунд не полный
     for (int round_index = 0; round_index < NUMBER_OF_ROUNDS - 1; ++round_index) {
         apply_LSX(&round_keys[BLOCK_LEN_IN_BYTES * round_index], block);
@@ -139,7 +139,7 @@ int main(int argc, char** argv) {
     } else if (argc == 2) {
         if (std::string(argv[1]) == "time") {
             std::uint8_t block[BLOCK_LEN_IN_BYTES] = {0};
-            std::uint8_t key[BLOCK_LEN_IN_BYTES* 2] = {1};
+            std::uint8_t key[BLOCK_LEN_IN_BYTES * 2] = {1};
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
             std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
             do_round_keys(key, round_keys, cache);
@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
             }
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> diff = end - start;
-            std::cout << 1 / (diff.count() * 1) << std::endl; // Mb per second
+            std::cout << 1 / diff.count() << std::endl; // Mb per second
             return 0;
         }
     }
