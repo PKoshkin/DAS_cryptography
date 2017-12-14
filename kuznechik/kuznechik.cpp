@@ -113,13 +113,52 @@ static void do_round_keys(
     }
 }
 
-
-static void apply_encrypt(const std::uint8_t* round_keys, std::uint8_t* block) {
-    // Последний раунд не полный
-    for (int round_index = 0; round_index < NUMBER_OF_ROUNDS - 1; ++round_index) {
-        apply_LSX(&round_keys[BLOCK_LEN_IN_BYTES * round_index], block);
+static void do_round_LSX_matricies(
+    const std::uint8_t* key, std::uint8_t round_LSX_matricies[9][16][256][16],
+    std::uint8_t* tmp
+) {
+    std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
+    std::memcpy(round_keys, key, BLOCK_LEN_IN_BYTES * 2);
+    for (int i = 1; i <= 4; ++i) {
+        std::memcpy(
+            &round_keys[BLOCK_LEN_IN_BYTES * (i * 2)],
+            &round_keys[BLOCK_LEN_IN_BYTES * ((i - 1) * 2)],
+            BLOCK_LEN_IN_BYTES * 2
+        );
+        for (int j = 8 * (i - 1) + 1; j <= 8 * (i - 1) + 8; ++j) {
+            apply_F(
+                 round_constants[(j - 1)],
+                 &round_keys[BLOCK_LEN_IN_BYTES * (i * 2)],
+                 &round_keys[BLOCK_LEN_IN_BYTES * (i * 2 + 1)],
+                 tmp
+            );
+        }
+    }    
+    for (int i = 0; i < 9; ++i) {
+        std::memcpy(&round_LSX_matricies[i], LS_matrix, 16 * 256 * 16);
+        for (int j = 0; j < 256; ++j) {
+            for (int k = 0; k < 16; ++k) {
+                round_LSX_matricies[i][0][j][k] ^= round_keys[k];
+            }
+        }
     }
-    apply_X(&round_keys[BLOCK_LEN_IN_BYTES * (NUMBER_OF_ROUNDS - 1)], block);
+}
+
+
+static void apply_encrypt(std::uint8_t* round_keys,
+    std::uint8_t round_LSX_matricies[9][16][256][16], std::uint8_t* block
+) {
+    std::uint8_t result[BLOCK_LEN_IN_BYTES] = {0};
+    // Последний раунд не полный
+    for (int k = 0; k < NUMBER_OF_ROUNDS - 1; ++k) {
+        for (std::uint8_t i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
+            for (std::uint8_t j = 0; j < BLOCK_LEN_IN_BYTES; ++j) {
+                result[j] ^= round_LSX_matricies[k][i][block[i]][j];
+            }
+        }
+    }
+
+    do_X(&round_keys[BLOCK_LEN_IN_BYTES * (NUMBER_OF_ROUNDS - 1)], result, block);
 }
 
 int main(int argc, char** argv) {
@@ -130,23 +169,27 @@ int main(int argc, char** argv) {
             block_from_string(std::string(argv[2]), key, 32);
             block_from_string(std::string(argv[3]), block);
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
+            std::uint8_t LSX_matricies[9][16][256][16] = {0};
             std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
             do_round_keys(key, round_keys, cache);
-            apply_encrypt(round_keys, block);
+            do_round_LSX_matricies(key, LSX_matricies, cache);
+            apply_encrypt(round_keys, LSX_matricies, block);
             std::cout << to_string(block) << std::endl;
             return 0;
         }
     } else if (argc == 2) {
         if (std::string(argv[1]) == "time") {
             std::uint8_t block[BLOCK_LEN_IN_BYTES] = {0};
-            std::uint8_t key[BLOCK_LEN_IN_BYTES* 2] = {1};
+            std::uint8_t key[BLOCK_LEN_IN_BYTES * 2] = {1};
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
+            std::uint8_t LSX_matricies[9][16][256][16];
             std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
             do_round_keys(key, round_keys, cache);
+            do_round_LSX_matricies(key, LSX_matricies, cache);
 
             auto start = std::chrono::system_clock::now();
             for (std::size_t i = 0; i < 64 * 1024; ++i) {
-                apply_encrypt(round_keys, block);
+                apply_encrypt(round_keys, LSX_matricies, block);
             }
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> diff = end - start;
