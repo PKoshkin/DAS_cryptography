@@ -92,21 +92,21 @@ static void apply_F(
 }
 
 static void do_round_keys(
-    const std::uint8_t* key, std::uint8_t* round_keys,
+    const std::uint8_t* key, std::uint8_t round_keys[NUMBER_OF_ROUNDS][BLOCK_LEN_IN_BYTES],
     std::uint8_t* tmp
 ) {
     std::memcpy(round_keys, key, BLOCK_LEN_IN_BYTES * 2);
     for (int i = 1; i <= 4; ++i) {
         std::memcpy(
-            &round_keys[BLOCK_LEN_IN_BYTES * (i * 2)],
-            &round_keys[BLOCK_LEN_IN_BYTES * ((i - 1) * 2)],
+            &round_keys[i * 2][0],
+            &round_keys[(i - 1) * 2][0],
             BLOCK_LEN_IN_BYTES * 2
         );
         for (int j = 8 * (i - 1) + 1; j <= 8 * (i - 1) + 8; ++j) {
             apply_F(
                  round_constants[(j - 1)],
-                 &round_keys[BLOCK_LEN_IN_BYTES * (i * 2)],
-                 &round_keys[BLOCK_LEN_IN_BYTES * (i * 2 + 1)],
+                 round_keys[i * 2],
+                 round_keys[i * 2 + 1],
                  tmp
             );
         }
@@ -117,19 +117,19 @@ static void do_round_LSX_matricies(
     const std::uint8_t* key, std::uint8_t round_LSX_matricies[9][16][256][16],
     std::uint8_t* tmp
 ) {
-    std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
+    std::uint8_t round_keys[NUMBER_OF_ROUNDS][BLOCK_LEN_IN_BYTES] = {0};
     std::memcpy(round_keys, key, BLOCK_LEN_IN_BYTES * 2);
     for (int i = 1; i <= 4; ++i) {
         std::memcpy(
-            &round_keys[BLOCK_LEN_IN_BYTES * (i * 2)],
-            &round_keys[BLOCK_LEN_IN_BYTES * ((i - 1) * 2)],
+            &round_keys[i * 2][0],
+            &round_keys[(i - 1) * 2][0],
             BLOCK_LEN_IN_BYTES * 2
         );
         for (int j = 8 * (i - 1) + 1; j <= 8 * (i - 1) + 8; ++j) {
             apply_F(
                  round_constants[(j - 1)],
-                 &round_keys[BLOCK_LEN_IN_BYTES * (i * 2)],
-                 &round_keys[BLOCK_LEN_IN_BYTES * (i * 2 + 1)],
+                 round_keys[i * 2],
+                 round_keys[i * 2 + 1],
                  tmp
             );
         }
@@ -138,14 +138,14 @@ static void do_round_LSX_matricies(
         std::memcpy(&round_LSX_matricies[i], LS_matrix, 16 * 256 * 16);
         for (int j = 0; j < 256; ++j) {
             for (int k = 0; k < 16; ++k) {
-                round_LSX_matricies[i][0][j][k] ^= round_keys[k];
+                round_LSX_matricies[i][0][j][k] ^= round_keys[i][k];
             }
         }
     }
 }
 
 
-static void apply_encrypt(std::uint8_t* round_keys,
+static void apply_encrypt(std::uint8_t round_keys[NUMBER_OF_ROUNDS][BLOCK_LEN_IN_BYTES],
     std::uint8_t round_LSX_matricies[9][16][256][16], std::uint8_t* block
 ) {
     std::uint8_t result[BLOCK_LEN_IN_BYTES] = {0};
@@ -158,7 +158,7 @@ static void apply_encrypt(std::uint8_t* round_keys,
         }
     }
 
-    do_X(&round_keys[BLOCK_LEN_IN_BYTES * (NUMBER_OF_ROUNDS - 1)], result, block);
+    do_X(round_keys[NUMBER_OF_ROUNDS - 1], result, block);
 }
 
 int main(int argc, char** argv) {
@@ -170,7 +170,7 @@ int main(int argc, char** argv) {
             block_from_string(std::string(argv[3]), block);
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
             std::uint8_t LSX_matricies[9][16][256][16] = {0};
-            std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
+            std::uint8_t round_keys[NUMBER_OF_ROUNDS][BLOCK_LEN_IN_BYTES] = {0};
             do_round_keys(key, round_keys, cache);
             do_round_LSX_matricies(key, LSX_matricies, cache);
             apply_encrypt(round_keys, LSX_matricies, block);
@@ -183,7 +183,7 @@ int main(int argc, char** argv) {
             std::uint8_t key[BLOCK_LEN_IN_BYTES * 2] = {1};
             std::uint8_t cache[BLOCK_LEN_IN_BYTES] = {0};
             std::uint8_t LSX_matricies[9][16][256][16];
-            std::uint8_t round_keys[BLOCK_LEN_IN_BYTES * NUMBER_OF_ROUNDS] = {0};
+            std::uint8_t round_keys[NUMBER_OF_ROUNDS][BLOCK_LEN_IN_BYTES] = {0};
             do_round_keys(key, round_keys, cache);
             do_round_LSX_matricies(key, LSX_matricies, cache);
 
