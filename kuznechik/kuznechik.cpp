@@ -90,10 +90,9 @@ static void do_round_LSX_matricies(
     std::uint8_t round_LSX_matricies[ROUNDS_NUMBER - 1][16][256][16]
 ) {
     for (int i = 0; i < ROUNDS_NUMBER - 1; ++i) {
-        std::memcpy(round_LSX_matricies[i], LS_matrix, 16 * 256 * 16);
-        for (int j = 0; j < 256; ++j) {
-            for (int k = 0; k < 16; ++k) {
-                round_LSX_matricies[i][0][j][k] ^= round_keys[i][k];
+        for (int j = 0; j < 16; ++j) {
+            for (int k = 0; k < 256; ++k) {
+                std::memcpy(round_LSX_matricies[i][j][k], LS_matrix[j][k ^ round_keys[i][j]], 8);
             }
         }
     }
