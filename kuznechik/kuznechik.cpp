@@ -49,9 +49,13 @@ static void swap_blocks(Block left, Block right, Block tmp) {
 }
 
 static void apply_X(const Block key, Block block) {
+    ((uint64_t*)block)[0] ^= ((uint64_t*)key)[0];
+    ((uint64_t*)block)[1] ^= ((uint64_t*)key)[1];
+/*
     for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
         block[i] ^= key[i];
     }
+*/
 }
 
 static void apply_LSX(const Block key, Block block) {
@@ -151,12 +155,22 @@ int main(int argc, char** argv) {
 
             auto start = std::chrono::system_clock::now();
             for (int i = 0; i < 64 * 1024; ++i) {
-                
                 new_apply_encrypt(round_keys, round_XLS_matricies, block);
             }
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> diff = end - start;
             std::cout << 1 / diff.count() << std::endl; // Mb per second
+
+            /*
+            start = std::chrono::system_clock::now();
+            for (int i = 0; i < 64 * 1024; ++i) {
+                apply_encrypt(round_keys, block);
+            }
+            end = std::chrono::system_clock::now();
+            diff = end - start;
+            std::cout << 1 / diff.count() << std::endl; // Mb per second
+            */
+
             return 0;
         }
     }
