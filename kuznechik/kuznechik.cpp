@@ -8,6 +8,8 @@
 #include "data.h"
 #include "LS_matrix.h"
 
+#pragma simd
+
 const std::size_t ROUNDS_NUMBER = 10;
 const std::size_t BLOCK_LEN_IN_BYTES = 16;
 const std::size_t KEY_LEN_IN_BYTES = 32;
@@ -49,13 +51,8 @@ static void swap_blocks(Block left, Block right, Block tmp) {
 }
 
 static void apply_X(const Block key, Block block) {
-    ((uint64_t*)block)[0] ^= ((uint64_t*)key)[0];
-    ((uint64_t*)block)[1] ^= ((uint64_t*)key)[1];
-/*
-    for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
-        block[i] ^= key[i];
-    }
-*/
+	(reinterpret_cast<std::uint64_t*>(block))[0] ^= (reinterpret_cast<const std::uint64_t*>(key))[0];
+	(reinterpret_cast<std::uint64_t*>(block))[1] ^= (reinterpret_cast<const std::uint64_t*>(key))[1];
 }
 
 static void apply_LSX(const Block key, Block block) {
@@ -102,16 +99,7 @@ static void do_round_XLS_matricies(
 }
 
 
-static void apply_encrypt(const Block round_keys[ROUNDS_NUMBER], Block block) {
-    // Последний раунд не полный
-    for (int round_index = 0; round_index < ROUNDS_NUMBER - 1; ++round_index) {
-        apply_LSX(round_keys[round_index], block);
-    }
-    apply_X(round_keys[ROUNDS_NUMBER - 1], block);
-}
-
-
-static void new_apply_encrypt(
+static void apply_encrypt(
     const Block round_keys[ROUNDS_NUMBER],
     std::uint8_t round_XSL_matricies[ROUNDS_NUMBER - 1][256][16], Block block
 ) {
@@ -138,39 +126,29 @@ int main(int argc, char** argv) {
             do_round_keys(key, round_keys);
             std::uint8_t round_XLS_matricies[ROUNDS_NUMBER - 1][256][16] = {0};
             do_round_XLS_matricies(round_keys, round_XLS_matricies);
-            new_apply_encrypt(round_keys, round_XLS_matricies, block);
+            apply_encrypt(round_keys, round_XLS_matricies, block);
             std::cout << to_string(block) << std::endl;
             return 0;
         }
     } else if (argc == 2) {
         if (std::string(argv[1]) == "time") {
             Block block = {0};
-            Key key = {0};
+            Key key = {1};
             Block round_keys[ROUNDS_NUMBER] = {0};
             do_round_keys(key, round_keys);
 
             std::uint8_t round_XLS_matricies[ROUNDS_NUMBER - 1][256][16];
             do_round_XLS_matricies(round_keys, round_XLS_matricies);
 
-
             auto start = std::chrono::system_clock::now();
-            for (int i = 0; i < 64 * 1024; ++i) {
-                new_apply_encrypt(round_keys, round_XLS_matricies, block);
+            for (int i = 0; i < 100 * 64 * 1024; ++i) {
+                apply_encrypt(round_keys, round_XLS_matricies, block);
             }
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> diff = end - start;
-            std::cout << 1 / diff.count() << std::endl; // Mb per second
-
-            /*
-            start = std::chrono::system_clock::now();
-            for (int i = 0; i < 64 * 1024; ++i) {
-                apply_encrypt(round_keys, block);
-            }
-            end = std::chrono::system_clock::now();
-            diff = end - start;
-            std::cout << 1 / diff.count() << std::endl; // Mb per second
-            */
-
+            std::cout << 100 / diff.count() << std::endl; // Mb per second
+            // Чтобы компилятор не выпилил все, что выше
+            apply_encrypt(round_keys, round_XLS_matricies, block);
             return 0;
         }
     }
