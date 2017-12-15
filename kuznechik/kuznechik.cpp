@@ -92,7 +92,7 @@ static void do_round_LSX_matricies(
     for (int i = 0; i < ROUNDS_NUMBER - 1; ++i) {
         for (int j = 0; j < 16; ++j) {
             for (int k = 0; k < 256; ++k) {
-                std::memcpy(round_LSX_matricies[i][j][k], LS_matrix[j][k ^ round_keys[i][j]], 8);
+                std::memcpy(round_LSX_matricies[i][j][k], LS_matrix[j][k ^ round_keys[i][j]], 16);
             }
         }
     }
@@ -131,7 +131,7 @@ int main(int argc, char** argv) {
         if (std::string(argv[1]) == "encrypt") {
             Key key = {0};
             Block block = {0};
-            block_from_string(std::string(argv[2]), key, BLOCK_LEN_IN_BYTES * 2);
+            block_from_string(std::string(argv[2]), key, KEY_LEN_IN_BYTES);
             block_from_string(std::string(argv[3]), block);
             Block round_keys[ROUNDS_NUMBER] = {0};
             do_round_keys(key, round_keys);
