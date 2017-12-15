@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
             }
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> diff = end - start;
-            std::cout << 1 / (diff.count() * 1) << std::endl; // Mb per second
+            std::cout << 1 / diff.count() << std::endl; // Mb per second
             return 0;
         }
     }
