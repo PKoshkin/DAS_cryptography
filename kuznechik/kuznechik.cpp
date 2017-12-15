@@ -5,7 +5,6 @@
 #include <string>
 #include <bitset>
 
-#include "data.h"
 #include "LS_matrix.h"
 
 #pragma simd
