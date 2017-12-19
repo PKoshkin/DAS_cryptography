@@ -161,9 +161,9 @@ static void apply_decrypt(
     apply_S(block);
     for (int round_index = 0; round_index < ROUNDS_NUMBER - 1; ++round_index) {
         apply_round_inversed_XLS(round_XSL_inversed_matricies, round_index, block);
-        apply_inversed_S(block);
-        apply_X(round_keys[0], block);
     }
+    apply_inversed_S(block);
+    apply_X(round_keys[0], block);
 }
 
 
