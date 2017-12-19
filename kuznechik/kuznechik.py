@@ -53,3 +53,10 @@ def encrypt(key, block):
             from_16_to_2(key), from_16_to_2(block)
         ), shell=True).decode("utf-8")[:-1]
     )
+
+def decrypt(key, block):
+    return from_2_to_16(
+        subprocess.check_output("./kuznechik decrypt {} {}".format(
+            from_16_to_2(key), from_16_to_2(block)
+        ), shell=True).decode("utf-8")[:-1]
+    )
