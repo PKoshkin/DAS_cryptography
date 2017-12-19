@@ -97,6 +97,17 @@ static void do_round_XLS_matricies(
     }
 }
 
+static void do_round_XLS_inversed_matricies(
+    const Block round_keys[ROUNDS_NUMBER],
+    std::uint8_t round_XSL_inversed_matricies[ROUNDS_NUMBER - 1][256][16]
+) {
+    for (int i = 0; i < ROUNDS_NUMBER - 1; ++i) {
+        for (uint16_t k = 0; k < 256; ++k) {
+            memcpy(round_XSL_inversed_matricies[i][k], inversed_LS_matrix[0][k], BLOCK_LEN_IN_BYTES);
+            apply_X(round_keys[i + 1], round_XSL_inversed_matricies[i][k]);
+        }
+    }
+}
 
 static void apply_round_XLS(
     std::uint8_t round_XSL_matricies[ROUNDS_NUMBER - 1][256][16], int round_index, Block block
@@ -105,6 +116,17 @@ static void apply_round_XLS(
     apply_X(round_XSL_matricies[round_index][block[0]], result);
     for (int i = 1; i < BLOCK_LEN_IN_BYTES; ++i) {
         apply_X(LS_matrix[i][block[i]], result);
+    }
+    std::memcpy(block, result, BLOCK_LEN_IN_BYTES);
+}
+
+static void apply_round_inversed_XLS(
+    std::uint8_t round_XSL_inversed_matricies[ROUNDS_NUMBER - 1][256][16], int round_index, Block block
+) {
+    Block result = {0};
+    apply_X(round_XSL_inversed_matricies[ROUNDS_NUMBER - round_index - 2][block[0]], result);
+    for (int i = 1; i < BLOCK_LEN_IN_BYTES; ++i) {
+        apply_X(inversed_LS_matrix[i][block[i]], result);
     }
     std::memcpy(block, result, BLOCK_LEN_IN_BYTES);
 }
@@ -120,10 +142,34 @@ static void apply_encrypt(
     }
 }
 
+static void apply_S(Block block) {
+    for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
+        block[i] = pi[block[i]];
+    }
+}
+
+static void apply_inversed_S(Block block) {
+    for (int i = 0; i < BLOCK_LEN_IN_BYTES; ++i) {
+        block[i] = inversed_pi[block[i]];
+    }
+}
+
+static void apply_decrypt(
+    const Block round_keys[ROUNDS_NUMBER],
+    std::uint8_t round_XSL_inversed_matricies[ROUNDS_NUMBER - 1][256][16], Block block
+) {
+    apply_S(block);
+    for (int round_index = 0; round_index < ROUNDS_NUMBER - 1; ++round_index) {
+        apply_round_inversed_XLS(round_XSL_inversed_matricies, round_index, block);
+        apply_inversed_S(block);
+        apply_X(round_keys[0], block);
+    }
+}
+
 
 int main(int argc, char** argv) {
     if (argc == 4) {
-        if (std::string(argv[1]) == "encrypt") {
+        if ((std::string(argv[1]) == "encrypt") || (std::string(argv[1]) == "decrypt")) {
             Block block = {0};
             block_from_string(std::string(argv[3]), block);
 
@@ -132,10 +178,16 @@ int main(int argc, char** argv) {
             Block round_keys[ROUNDS_NUMBER] = {0};
             do_round_keys(key, round_keys);
 
-            std::uint8_t round_XLS_matricies[ROUNDS_NUMBER - 1][256][16] = {0};
-            do_round_XLS_matricies(round_keys, round_XLS_matricies);
 
-            apply_encrypt(round_keys, round_XLS_matricies, block);
+            if (std::string(argv[1]) == "encrypt") {
+                std::uint8_t round_XLS_matricies[ROUNDS_NUMBER - 1][256][16] = {0};
+                do_round_XLS_matricies(round_keys, round_XLS_matricies);
+                apply_encrypt(round_keys, round_XLS_matricies, block);
+            } else {
+                std::uint8_t round_XLS_inversed_matricies[ROUNDS_NUMBER - 1][256][16] = {0};
+                do_round_XLS_inversed_matricies(round_keys, round_XLS_inversed_matricies);
+                apply_decrypt(round_keys, round_XLS_inversed_matricies, block);
+            }
 
             std::cout << to_string(block) << std::endl;
             return 0;
@@ -151,13 +203,24 @@ int main(int argc, char** argv) {
             std::uint8_t round_XLS_matricies[ROUNDS_NUMBER - 1][256][16];
             do_round_XLS_matricies(round_keys, round_XLS_matricies);
 
+            std::uint8_t round_XLS_inversed_matricies[ROUNDS_NUMBER - 1][256][16];
+            do_round_XLS_inversed_matricies(round_keys, round_XLS_inversed_matricies);
+
             auto start = std::chrono::system_clock::now();
             for (int i = 0; i < 100 * 64 * 1024; ++i) {
                 apply_encrypt(round_keys, round_XLS_matricies, block);
             }
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> diff = end - start;
-            std::cout << 100 / diff.count() << std::endl; // Mb per second
+            std::cout << "encrypt: " << 100 / diff.count() << std::endl; // Mb per second
+
+            start = std::chrono::system_clock::now();
+            for (int i = 0; i < 100 * 64 * 1024; ++i) {
+                apply_decrypt(round_keys, round_XLS_inversed_matricies, block);
+            }
+            end = std::chrono::system_clock::now();
+            diff = end - start;
+            std::cout << "decrypt: " << 100 / diff.count() << std::endl; // Mb per second
 
             // Чтобы компилятор не выпилил все, что выше
             apply_encrypt(round_keys, round_XLS_matricies, block);
