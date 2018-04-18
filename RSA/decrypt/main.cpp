@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 
     std::string result = "";
     for (size_t i = 0; i < hex_str.size(); i += 2) {
-        result += hex_str.substr(i, 2);
+        result += stoi(hex_str.substr(i, 2), 0, 16);
     }
 
     std::ofstream file;
